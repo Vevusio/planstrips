@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="condition1" required="yes" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+				<parameter-def name="condition2" required="yes" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P4" title="root">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" />
+						</plan-activation>
+						<subplans type="any-order"> 	<!-- Exclusive Choice -->
+							<wait-for>
+								<one />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Plan_A" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Plan_B" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Plan_C" />
+							</plan-activation>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="condition1">
+							<value-description type="equal">
+								<qualitative-constant value="true" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<now />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="condition2">
+							<value-description type="equal">
+								<qualitative-constant value="true" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<now />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_C" title="Plan C">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<defaults>
+					<time-annotation>
+						<time-range>
+							<duration>
+								<minimum>
+									<numerical-constant value="2" unit="s" />
+								</minimum>
+							</duration>
+						</time-range>
+						<self/>
+					</time-annotation>
+				</defaults>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

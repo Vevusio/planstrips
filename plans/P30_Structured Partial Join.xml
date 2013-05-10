@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="complete_B" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+				<parameter-def name="complete_C" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+				<parameter-def name="complete_D" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P30" title="Structured Partial Join">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="A"/>
+  					</plan-activation>
+  					<subplans type="unordered">
+  						<wait-for>
+  							<wait-for-group type="or">
+  								<wait-for-group type="and">
+  									<static-plan-pointer plan-name="B"/>
+  									<static-plan-pointer plan-name="C"/>
+  								</wait-for-group>
+  								<wait-for-group type="and">
+  									<static-plan-pointer plan-name="B"/>
+  									<static-plan-pointer plan-name="D"/>
+  								</wait-for-group>
+  								<wait-for-group type="and">
+  									<static-plan-pointer plan-name="C"/>
+  									<static-plan-pointer plan-name="D"/>
+  								</wait-for-group>
+  							</wait-for-group>
+  						</wait-for>
+  						<plan-activation>
+  							<plan-schema name="B"/>
+  						</plan-activation>
+  						<plan-activation>
+  							<plan-schema name="C"/>
+  						</plan-activation>
+  						<plan-activation>
+  							<plan-schema name="D"/>
+  						</plan-activation>
+  					</subplans>
+  					<plan-activation>
+  						<plan-schema name="E"/>
+  					</plan-activation>
+				</subplans>
+			</plan-body>
+		</plan>
+  		<plan name="A">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-4" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="B">
+  			<conditions>
+  				<complete-condition>
+  					<parameter-proposition parameter-name="complete_B">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="C">
+  			<conditions>
+  				<complete-condition>
+  					<parameter-proposition parameter-name="complete_C">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="D">
+  			<conditions>
+  				<complete-condition>
+  					<parameter-proposition parameter-name="complete_D">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="E">
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

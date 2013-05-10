@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Christian Fuchsberger Version Beta 2 
+<!DOCTYPE plan-library SYSTEM "asbru_7_3.dtd">-->
+<plan-library>
+        <domain-defs>
+                <domain name="controlled_ventilation_domain">
+                        <unit-def name="mgdl" default-unit="mg/dl">
+                                <compound-def>
+                                        <numerator>
+                                                <unit-class name="numerator"/>
+                                        </numerator>
+                                        <denominator>
+                                                <unit-class name="volume"/>
+                                        </denominator>
+                                </compound-def>
+                        </unit-def>
+                        <qualitative-scale-def name="patient_state_typ">
+                                <qualitative-entry entry="healthy"/>
+                                <qualitative-entry entry="slight_ill"/>
+                                <qualitative-entry entry="ill"/>
+                                <qualitative-entry entry="very_ill"/>
+                        </qualitative-scale-def>
+                        <!-- Konstanten für FiO2 hoch usw. einfügen -->
+                        <!--######################################################################################## -->
+                        <parameter-group title="raw data blood gase online">
+                                <parameter-def name="tcSaO2" type="parts" >
+                                     <raw-data-def mode="automatic" unit="%" channel-name="tcSaO2"/>
+                                        <sampling-frequency>
+                                           <numerical-constant value="10"/>
+                                     </sampling-frequency>
+                                </parameter-def>
+                                <parameter-def name="PtcCO2" type="pressure">
+                                        <raw-data-def mode="automatic" unit="%" channel-name="PtcCO2"/>
+                                         <sampling-frequency>
+                                           <numerical-constant value="10"/>
+                                     </sampling-frequency>
+                                </parameter-def>
+                        </parameter-group>
+
+                        <parameter-group title="raw data blood gase offline">
+                                <parameter-def name="PCO2" type="pressure">
+                                        <raw-data-def mode="automatic" unit="mmHG" channel-name="PCO2"/>
+                                </parameter-def>
+                       
+                        </parameter-group>
+
+                        <parameter-group title="parameters calculated">
+                                <parameter-def name="PCO2_calculated" type="pressure">
+                                        <calculation-def operator="multiply">
+                                                <parameter-ref name="PtcCO2"/>
+                                                <calculation-def operator="divide">
+                                                        <parameter-ref name="PtcCO2"/>
+                                                        <parameter-ref name="PCO2"/>
+                                                </calculation-def>
+                                        </calculation-def>
+                                </parameter-def>
+                        </parameter-group>
+                        <parameter-group title="parameters ask">
+                                <parameter-def name="patient_weight" type="kg">
+                                        <raw-data-def mode="manual" user-text="Weight of the patient?"/>
+                                </parameter-def>
+                                <parameter-def name="patient_state" type="patient_state_typ">
+                                        <raw-data-def mode="manual" user-text="State of the patient?"/>
+                                </parameter-def>
+                        </parameter-group>
+                        <!--######################################################################################## -->
+                        <variable-def name="f">
+                                <scalar-def type="beats"/>
+                        </variable-def>
+                        <variable-def name="PIP">
+                                <scalar-def type="pressure"/>
+                        </variable-def>
+                        <variable-def name="FiO2">
+                                <scalar-def type="pressure"/>
+                        </variable-def>
+                        <variable-def name="PEEP">
+                                <scalar-def type="pressure"/>
+                        </variable-def>
+                </domain>
+        </domain-defs>
+        <!--######################################################################################## -->
+        <plans>
+                <plan-group>
+                        <plan name="ventilation_plan">
+                                <intentions>
+                                        <intention type="overall-state" verb="achieve">
+                                                <parameter-proposition parameter-name="FiO2">
+                                                        <value-description type="less-or-equal">
+                                                                <numerical-constant value="40"/>
+                                                        </value-description>
+                                                        <context>
+                                                                <any/>
+                                                        </context>
+                                                        <time-annotation>
+                                                                <any/>
+                                                        </time-annotation>
+                                                </parameter-proposition>
+                                        </intention>
+                                </intentions>
+                                <conditions>
+                                        <complete-condition>
+                                                <constraint-combination type="and">
+                                                        <parameter-proposition parameter-name="FiO2">
+                                                                <value-description type="less-or-equal">
+                                                                        <numerical-constant value="40"/>
+                                                                </value-description>
+                                                                <context>
+                                                                        <any/>
+                                                                </context>
+                                                                <time-annotation>
+                                                                        <any/>
+                                                                </time-annotation>
+                                                        </parameter-proposition>
+                                                        <parameter-proposition parameter-name="PIP">
+                                                                <value-description type="less-or-equal">
+                                                                        <numerical-constant value="20"/>
+                                                                </value-description>
+                                                                <context>
+                                                                        <any/>
+                                                                </context>
+                                                                <time-annotation>
+                                                                        <any/>
+                                                                </time-annotation>
+                                                        </parameter-proposition>
+                                                </constraint-combination>
+                                        </complete-condition>
+                                        <abort-condition>
+                                                <constraint-combination type="or">
+                                                        <parameter-proposition parameter-name="FiO2">
+                                                                <value-description type="greater-than">
+                                                                        <numerical-constant value="90"/>
+                                                                </value-description>
+                                                                <context>
+                                                                        <any/>
+                                                                </context>
+                                                                <time-annotation>
+                                                                        <any/>
+                                                                </time-annotation>
+                                                        </parameter-proposition>
+                                                        <parameter-proposition parameter-name="PIP">
+                                                                <value-description type="greater-than">
+                                                                        <numerical-constant value="25"/>
+                                                                </value-description>
+                                                                <context>
+                                                                        <any/>
+                                                                </context>
+                                                                <time-annotation>
+                                                                        <any/>
+                                                                </time-annotation>
+                                                        </parameter-proposition>
+                                                        <parameter-proposition parameter-name="PCO2">
+                                                                <value-description type="greater-than">
+                                                                        <numerical-constant value="100"/>
+                                                                </value-description>
+                                                                <context>
+                                                                        <any/>
+                                                                </context>
+                                                                <time-annotation>
+                                                                        <any/>
+                                                                </time-annotation>
+                                                        </parameter-proposition>
+                                                </constraint-combination>
+                                        </abort-condition>
+                                </conditions>
+                                <plan-body>
+                                        <subplans type="sequentially">
+                                                <wait-for>
+                                                        <static-plan-pointer plan-name=""/>
+                                                </wait-for>
+                                                <plan-activation>
+                                                        <plan-schema name="initial_plan"/>
+                                                </plan-activation>
+                                                <plan-activation>
+                                                        <plan-schema name="controlled_ventilation_plan"/>
+                                                </plan-activation>
+                                        </subplans>
+                                </plan-body>
+                        </plan>
+                        <!--######################################################################################## -->
+                        <plan name="initial_plan" title="Initial Plan">
+                                <plan-body>
+                                        <subplans type="sequentially">
+                                                <wait-for>
+                                                        <none/>
+                                                </wait-for>
+                                                <ask>
+                                                        <parameter-ref name="patient_weight"/>
+                                                        <time-out>
+                                                                <now/>
+                                                        </time-out>
+                                                </ask>
+                                                <ask>
+                                                        <parameter-ref name="patient_state"/>
+                                                        <time-out>
+                                                                <now/>
+                                                        </time-out>
+                                                </ask>
+                                                <if-then-else>
+                                                        <simple-condition>
+                                                                <comparison type="equal">
+                                                                        <left-hand-side>
+                                                                                <parameter-ref name="patient-state"/>
+                                                                        </left-hand-side>
+                                                                        <right-hand-side>
+                                                                                <qualitative-constant value="healthy"/>
+                                                                        </right-hand-side>
+                                                                </comparison>
+                                                        </simple-condition>
+                                                        <then-branch>
+                                                                <variable-assignment variable="FiO2">
+                                                                        <numerical-constant value="1"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PIP">
+                                                                        <numerical-constant value="10"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="f">
+                                                                        <numerical-constant value="40"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PEEP">
+                                                                        <numerical-constant value="3"/>
+                                                                </variable-assignment>
+                                                        </then-branch>
+                                                </if-then-else>
+                                                <if-then-else>
+                                                        <simple-condition>
+                                                                <comparison type="equal">
+                                                                        <left-hand-side>
+                                                                                <parameter-ref name="patient-state"/>
+                                                                        </left-hand-side>
+                                                                        <right-hand-side>
+                                                                                <qualitative-constant value="slight_ill"/>
+                                                                        </right-hand-side>
+                                                                </comparison>
+                                                        </simple-condition>
+                                                        <then-branch>
+                                                                <variable-assignment variable="FiO2">
+                                                                        <numerical-constant value="35"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PIP">
+                                                                        <numerical-constant value="15"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="f">
+                                                                        <numerical-constant value="40"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PEEP">
+                                                                        <numerical-constant value="4"/>
+                                                                </variable-assignment>
+                                                        </then-branch>
+                                                </if-then-else>
+                                                <if-then-else>
+                                                        <simple-condition>
+                                                                <comparison type="equal">
+                                                                        <left-hand-side>
+                                                                                <parameter-ref name="patient-state"/>
+                                                                        </left-hand-side>
+                                                                        <right-hand-side>
+                                                                                <qualitative-constant value="ill"/>
+                                                                        </right-hand-side>
+                                                                </comparison>
+                                                        </simple-condition>
+                                                        <then-branch>
+                                                                <variable-assignment variable="FiO2">
+                                                                        <numerical-constant value="50"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PIP">
+                                                                        <numerical-constant value="20"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="f">
+                                                                        <numerical-constant value="50"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PEEP">
+                                                                        <numerical-constant value="5"/>
+                                                                </variable-assignment>
+                                                        </then-branch>
+                                                </if-then-else>
+                                                <if-then-else>
+                                                        <simple-condition>
+                                                                <comparison type="equal">
+                                                                        <left-hand-side>
+                                                                                <parameter-ref name="patient-state"/>
+                                                                        </left-hand-side>
+                                                                        <right-hand-side>
+                                                                                <qualitative-constant value="very_ill"/>
+                                                                        </right-hand-side>
+                                                                </comparison>
+                                                        </simple-condition>
+                                                        <then-branch>
+                                                                <variable-assignment variable="FiO2">
+                                                                        <numerical-constant value="100"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PIP">
+                                                                        <numerical-constant value="23"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="f">
+                                                                        <numerical-constant value="60"/>
+                                                                </variable-assignment>
+                                                                <variable-assignment variable="PEEP">
+                                                                        <numerical-constant value="5"/>
+                                                                </variable-assignment>
+                                                        </then-branch>
+                                                </if-then-else>
+                                        </subplans>
+                                </plan-body>
+                        </plan>
+                        <plan name="controlled_ventilation_plan">
+                                <plan-body>
+                                        <subplans type="parallel">
+                                                <wait-for>
+                                                        <static-plan-pointer plan-name=""/>
+                                                </wait-for>
+                                                <plan-activation>
+                                                        <plan-schema name="handle_PCO2_plan"/>
+                                                </plan-activation>
+                                                <plan-activation>
+                                                        <plan-schema name="handle_tcSaO2_low_plan"/>
+                                                </plan-activation>
+                                        </subplans>
+                                </plan-body>
+                        </plan>
+                        <!--######################################################################################## -->
+                        <plan name="handle_PCO2_plan">
+                                <conditions>
+                                        <abort-condition>
+                                                <parameter-proposition parameter-name="PCO2">
+                                                        <value-description type="greater-than">
+                                                                <numerical-constant value="100"/>
+                                                        </value-description>
+                                                        <context>
+                                                                <any/>
+                                                        </context>
+                                                        <time-annotation>
+                                                                <any/>
+                                                        </time-annotation>
+                                                </parameter-proposition>
+                                        </abort-condition>
+                                </conditions>
+                                <plan-body>
+                                        <cyclical-plan>
+                                                <start-time>
+                                                        <cyclical-time-annotation>
+                                                                <time-range/>
+                                                                <set-of-cyclical-time-points>
+                                                                        <time-point>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </time-point>
+                                                                        <offset>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </offset>
+                                                                        <frequency>
+                                                                                <numerical-constant scale="time" unit="min" value="5"/>
+                                                                        </frequency>
+                                                                </set-of-cyclical-time-points>
+                                                        </cyclical-time-annotation>
+                                                </start-time>
+                                                <cyclical-plan-body>
+                                                        <subplans type="sequentially">
+                                                                <wait-for>
+                                                                        <none/>
+                                                                </wait-for>
+                                                                <if-then-else>
+                                                                        <simple-condition>
+                                                                                <comparison type="greater-than">
+                                                                                        <left-hand-side>
+                                                                                                <parameter-ref name="PCO2_calculated"/>
+                                                                                        </left-hand-side>
+                                                                                        <right-hand-side>
+                                                                                                <qualitative-constant value="60"/>
+                                                                                        </right-hand-side>
+                                                                                </comparison>
+                                                                        </simple-condition>
+                                                                        <then-branch>
+                                                                                <variable-assignment variable="f">
+                                                                                        <operation operator="multiply">
+                                                                                                <operation operator="divide">
+                                                                                                        <parameter-ref name="PCO2_calculated"/>
+                                                                                                        <operation operator="add">
+                                                                                                                <parameter-ref name="PCO2_calculated"/>
+                                                                                                                <numerical-constant value="5"/>
+                                                                                                        </operation>
+                                                                                                </operation>
+                                                                                                <variable-ref name="f"/>
+                                                                                        </operation>
+                                                                                </variable-assignment>
+                                                                        </then-branch>
+                                                                </if-then-else>
+                                                                <if-then-else>
+                                                                        <simple-condition>
+                                                                                <comparison type="less-than">
+                                                                                        <left-hand-side>
+                                                                                                <parameter-ref name="PCO2_calculated"/>
+                                                                                        </left-hand-side>
+                                                                                        <right-hand-side>
+                                                                                                <qualitative-constant value="40"/>
+                                                                                        </right-hand-side>
+                                                                                </comparison>
+                                                                        </simple-condition>
+                                                                        <then-branch>
+                                                                                <variable-assignment variable="f">
+                                                                                        <operation operator="multiply">
+                                                                                                <operation operator="divide">
+                                                                                                        <parameter-ref name="PCO2_calculated"/>
+                                                                                                        <operation operator="subtract">
+                                                                                                                <parameter-ref name="PCO2_calculated"/>
+                                                                                                                <numerical-constant value="5"/>
+                                                                                                        </operation>
+                                                                                                </operation>
+                                                                                                <variable-ref name="f"/>
+                                                                                        </operation>
+                                                                                </variable-assignment>
+                                                                        </then-branch>
+                                                                </if-then-else>
+                                                        </subplans>
+                                                </cyclical-plan-body>
+                                                <repeat-specification>
+                                                        <retry-delay>
+                                                                <minimum>
+                                                                        <numerical-constant scale="time" unit="min" value="5"/>
+                                                                </minimum>
+                                                                <maximum>
+                                                                        <numerical-constant scale="time" unit="min" value="10"/>
+                                                                </maximum>
+                                                        </retry-delay>
+                                                </repeat-specification>
+                                        </cyclical-plan>
+                                </plan-body>
+                        </plan>
+                        <!--######################################################################################## -->
+                        <plan name="handle_tcSaO2_low_plan">
+                                <conditions>
+                                        <abort-condition>
+                                                <parameter-proposition parameter-name="FiO2">
+                                                        <value-description type="greater-than">
+                                                                <numerical-constant value="100"/>
+                                                        </value-description>
+                                                        <context>
+                                                                <any/>
+                                                        </context>
+                                                        <time-annotation>
+                                                                <any/>
+                                                        </time-annotation>
+                                                </parameter-proposition>
+                                        </abort-condition>
+                                </conditions>
+                                <plan-body>
+                                        <cyclical-plan>
+                                                <start-time>
+                                                        <cyclical-time-annotation>
+                                                                <time-range/>
+                                                                <set-of-cyclical-time-points>
+                                                                        <time-point>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </time-point>
+                                                                        <offset>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </offset>
+                                                                        <frequency>
+                                                                                <numerical-constant scale="time" unit="sec" value="10"/>
+                                                                        </frequency>
+                                                                </set-of-cyclical-time-points>
+                                                        </cyclical-time-annotation>
+                                                </start-time>
+                                                <cyclical-plan-body>
+                                                        <subplans type="sequentially">
+                                                                <wait-for>
+                                                                        <none/>
+                                                                </wait-for>
+                                                                <if-then-else>
+                                                                        <simple-condition>
+                                                                                <comparison type="less-than">
+                                                                                        <left-hand-side>
+                                                                                                <parameter-ref name="tcSaO2"/>
+                                                                                        </left-hand-side>
+                                                                                        <right-hand-side>
+                                                                                                <qualitative-constant value="90"/>
+                                                                                        </right-hand-side>
+                                                                                </comparison>
+                                                                        </simple-condition>
+                                                                        <then-branch>
+                                                                                <variable-assignment variable="FiO2">
+                                                                                        <operation operator="add">
+                                                                                                <variable-ref name="FiO2"/>
+                                                                                                <numerical-constant value="10"/>
+                                                                                        </operation>
+                                                                                </variable-assignment>
+                                                                        </then-branch>
+                                                                </if-then-else>
+                                                        </subplans>
+                                                </cyclical-plan-body>
+                                                <repeat-specification>
+                                                        <retry-delay>
+                                                                <minimum>
+                                                                        <numerical-constant scale="time" unit="sec" value="10"/>
+                                                                </minimum>
+                                                                <maximum>
+                                                                        <numerical-constant scale="time" unit="sec" value="10"/>
+                                                                </maximum>
+                                                        </retry-delay>
+                                                </repeat-specification>
+                                        </cyclical-plan>
+                                </plan-body>
+                        </plan>
+                        <!--######################################################################################## -->
+                        <plan name="handle_tcSaO2_high_plan">
+                                <conditions>
+                                        <abort-condition>
+                                                <parameter-proposition parameter-name="FiO2">
+                                                        <value-description type="greater-than">
+                                                                <numerical-constant value="100"/>
+                                                        </value-description>
+                                                        <context>
+                                                                <any/>
+                                                        </context>
+                                                        <time-annotation>
+                                                                <any/>
+                                                        </time-annotation>
+                                                </parameter-proposition>
+                                        </abort-condition>
+                                </conditions>
+                                <plan-body>
+                                        <cyclical-plan>
+                                                <start-time>
+                                                        <cyclical-time-annotation>
+                                                                <time-range/>
+                                                                <set-of-cyclical-time-points>
+                                                                        <time-point>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </time-point>
+                                                                        <offset>
+                                                                                <numerical-constant scale="time" unit="min" value="0"/>
+                                                                        </offset>
+                                                                        <frequency>
+                                                                                <numerical-constant scale="time" unit="min" value="5"/>
+                                                                        </frequency>
+                                                                </set-of-cyclical-time-points>
+                                                        </cyclical-time-annotation>
+                                                </start-time>
+                                                <cyclical-plan-body>
+                                                        <subplans type="sequentially">
+                                                                <wait-for>
+                                                                        <none/>
+                                                                </wait-for>
+                                                                <if-then-else>
+                                                                        <simple-condition>
+                                                                                <comparison type="greater-than">
+                                                                                        <left-hand-side>
+                                                                                                <parameter-ref name="tcSaO2"/>
+                                                                                        </left-hand-side>
+                                                                                        <right-hand-side>
+                                                                                                <qualitative-constant value="92"/>
+                                                                                        </right-hand-side>
+                                                                                </comparison>
+                                                                        </simple-condition>
+                                                                        <then-branch>
+                                                                                <variable-assignment variable="FiO2">
+                                                                                        <operation operator="subtract">
+                                                                                                <variable-ref name="FiO2"/>
+                                                                                                <numerical-constant value="5"/>
+                                                                                        </operation>
+                                                                                </variable-assignment>
+                                                                        </then-branch>
+                                                                </if-then-else>
+                                                        </subplans>
+                                                </cyclical-plan-body>
+                                                <repeat-specification>
+                                                        <retry-delay>
+                                                                <minimum>
+                                                                        <numerical-constant scale="time" unit="min" value="2"/>
+                                                                </minimum>
+                                                                <maximum>
+                                                                        <numerical-constant scale="time" unit="min" value="10"/>
+                                                                </maximum>
+                                                        </retry-delay>
+                                                </repeat-specification>
+                                        </cyclical-plan>
+                                </plan-body>
+                        </plan>
+                </plan-group>
+        </plans>
+</plan-library>

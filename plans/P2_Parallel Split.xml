@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="dummy" required="no" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="Parallel_Split" title="Parallel Split">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Split"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Block"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Block" title="Block">
+				<plan-body>
+					<subplans type="parallel">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Split" title="Split">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

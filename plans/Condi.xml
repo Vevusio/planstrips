@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="Plan_top">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="less-than">
+								<left-hand-side>
+									<variable-ref name="a" />
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="5" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_mid" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Plan_mid">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="less-than">
+								<left-hand-side>
+									<variable-ref name="b" />
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="10" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_bot" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Plan_bot">
+			<conditions>
+					<filter-precondition>
+						<constraint-combination type="and">
+						<simple-condition>
+							<comparison type="greater-than">
+								<left-hand-side>
+									<variable-ref name="c" />
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="7" />
+								</right-hand-side>
+							</comparison>
+							</simple-condition>
+						<simple-condition>
+							<comparison type="greater-than">
+								<left-hand-side>
+									<variable-ref name="a" />
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="5" />
+								</right-hand-side>
+							</comparison>
+							</simple-condition>
+						</constraint-combination>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<user-performed />
+					</subplans>
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

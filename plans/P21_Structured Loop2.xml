@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="repeat" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P21" title="Structured Loop">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Iterative_Plan" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Post_Plan" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+		<plan name="Iterative_Plan" title="Iterative Plan">
+  			<plan-body>
+				<iterative-plan>
+					<do-repeatedly>
+						<plan-activation>
+							<plan-schema name="Repeat" />
+						</plan-activation>
+					</do-repeatedly>
+					<termination-condition>
+						<comparison type="equal">
+							<left-hand-side>
+								<plan-state-transition state="activated" instance-type="first">
+									<self/>
+								</plan-state-transition>
+							</left-hand-side>
+							<right-hand-side>
+								<numerical-constant value="-5" unit="s" />
+							</right-hand-side>
+						</comparison>
+					</termination-condition>
+				</iterative-plan>
+  			</plan-body>
+  		</plan>
+  		<plan name="Repeat">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<!-- plan name="Repeat_Plan">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                           	<time-range>
+                           		<starting-shift>
+                           			<latest>
+                           				<numerical-constant value="-1" unit="s" />
+                           			</latest>
+								</starting-shift>
+							</time-range>
+                           	<now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan -->
+  		<plan name="Post_Plan">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

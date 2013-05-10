@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P6" title="root">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" /> 	
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Multi_Choice" /> 
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<conditions>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+								<time-range>
+									<starting-shift>
+										<latest>
+											<numerical-constant
+												value="-2" unit="s">
+											</numerical-constant>
+										</latest>
+									</starting-shift>
+								</time-range>
+								<now />
+							</time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Multi_Choice" title="Multi Choice">
+				<plan-body>
+					<subplans type="unordered" wait-for-optional-subplans="yes">
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" /> 	<!-- do A if age less 30 -->
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" /> 	<!-- do B if age greater 15 -->
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="less-than">
+								<numerical-constant value="30" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<time-range>
+									<starting-shift>
+										<latest>
+											<numerical-constant value="0" />
+										</latest>
+									</starting-shift>
+								</time-range>
+								<plan-state-transition state="considered" instance-type="first">
+									<self />
+								</plan-state-transition>
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="greater-than">
+								<numerical-constant value="15" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<time-range>
+									<starting-shift>
+										<latest>
+											<numerical-constant value="0" />
+										</latest>
+									</starting-shift>
+								</time-range>
+								<plan-state-transition state="considered" instance-type="first">
+									<self />
+								</plan-state-transition>
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

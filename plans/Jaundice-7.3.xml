@@ -1,0 +1,2192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "http://hildegard.asgaard.tuwien.ac.at/~peter/GMT/dtd/asbru_7.3.dtd">
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSpy (XMLSpy) -->
+<!-- edited with XML Spy v4.0.1 U (http://www.xmlspy.com) by Mar Marcos Lopez (Vrije Universiteit Amsterdam) -->
+<plan-library>
+    <library-info title="A'dam's version of Jaundice" version="1">
+        <administrative-data creation-date="-" original-author="Mar Marcos">
+            <changes author="Mar Marcos" date="27.3.2001" description="Date of last update"/>
+            <changes author="Peter Votruba" date="18.7.2002" description="Changed to Asbru 7.3"/>
+        </administrative-data>
+    </library-info>
+    <domain-defs>
+        <domain name="Jaundice">
+            <unit-def default-unit="mg/dl" name="mgdl">
+                <compound-def>
+                    <numerator>
+                        <unit-class name="mass"/>
+                    </numerator>
+                    <denominator>
+                        <unit-class name="volume"/>
+                    </denominator>
+                </compound-def>
+            </unit-def>
+            <qualitative-scale-def name="age-scale">
+                <qualitative-entry entry="day1"/>
+                <qualitative-entry entry="day2"/>
+                <qualitative-entry entry="day3"/>
+                <qualitative-entry entry="later"/>
+            </qualitative-scale-def>
+            <qualitative-scale-def name="bilirubin-scale">
+                <qualitative-entry entry="observation"/>
+                <qualitative-entry entry="phototherapy-recommended"/>
+                <qualitative-entry entry="phototherapy-normal"/>
+                <qualitative-entry entry="phototherapy-intensive"/>
+                <qualitative-entry entry="transfusion"/>
+            </qualitative-scale-def>
+            <qualitative-scale-def name="boolean">
+                <qualitative-entry entry="yes"/>
+                <qualitative-entry entry="no"/>
+            </qualitative-scale-def>
+            <qualitative-scale-def name="bloodtype-scale">
+                <qualitative-entry entry="A"/>
+                <qualitative-entry entry="B"/>
+                <qualitative-entry entry="AB"/>
+                <qualitative-entry entry="O"/>
+            </qualitative-scale-def>
+            <qualitative-scale-def name="rhesustype-scale">
+                <qualitative-entry entry="positive"/>
+                <qualitative-entry entry="negative"/>
+            </qualitative-scale-def>
+            <patient-record-def name="patient-data">
+                <primary-key name="name"/>
+                <!--PV: field-def (birth-date,date) changed to record-def/field-def/?-->
+                <record-def>
+                    <field-def name="birth-date">
+                        <scalar-def type="date"/>
+                    </field-def>
+                </record-def>
+            </patient-record-def>
+            <parameter-group title="Raw parameters and their abstractions">
+                <parameter-def name="age-child" type="time">
+                    <raw-data-def mode="manual" unit="h" use-as-context="no" user-text="What is the age? (at TSB measurement)"/>
+                </parameter-def>
+                <parameter-def name="age" type="age-scale">
+                    <qualitative-parameter-def use-as-context="yes">
+                        <limits unit="h">
+                            <context>
+                                <any/>
+                            </context>
+                            <limit-entry value="0"/>
+                            <limit-entry value="24"/>
+                            <limit-entry value="48"/>
+                            <limit-entry value="72"/>
+                            <positive-infinite/>
+                        </limits>
+                        <parameter-ref name="age-child"/>
+                    </qualitative-parameter-def>
+                </parameter-def>
+                <parameter-def name="TSB-value" type="amount">
+                    <raw-data-def mode="manual" unit="mgdl" use-as-context="no" user-text="What is the TSB measurement?"/>
+                </parameter-def>
+                <parameter-def name="bilirubin" type="bilirubin-scale">
+                    <qualitative-parameter-def>
+                        <limits unit="mgdl">
+                            <context>
+                                <one-of name="age">
+                                    <value-ref name="day2"/>
+                                </one-of>
+                            </context>
+                            <limit-entry value="0"/>
+                            <limit-entry value="12"/>
+                            <limit-entry value="15"/>
+                            <limit-entry value="20"/>
+                            <limit-entry value="25"/>
+                            <positive-infinite/>
+                        </limits>
+                        <limits unit="mgdl">
+                            <context>
+                                <one-of name="age">
+                                    <value-ref name="day3"/>
+                                </one-of>
+                            </context>
+                            <limit-entry value="0"/>
+                            <limit-entry value="15"/>
+                            <limit-entry value="18"/>
+                            <limit-entry value="25"/>
+                            <limit-entry value="30"/>
+                            <positive-infinite/>
+                        </limits>
+                        <limits unit="mgdl">
+                            <context>
+                                <one-of name="age">
+                                    <value-ref name="later"/>
+                                </one-of>
+                            </context>
+                            <limit-entry value="0"/>
+                            <limit-entry value="17"/>
+                            <limit-entry value="20"/>
+                            <limit-entry value="25"/>
+                            <limit-entry value="30"/>
+                            <positive-infinite/>
+                        </limits>
+                        <parameter-ref name="TSB-value"/>
+                    </qualitative-parameter-def>
+                </parameter-def>
+                <parameter-def name="TSB-change" type="amount">
+                    <change-def>
+                        <interval>
+                            <!--To revieW!-->
+                            <numerical-constant scale="h" value="6"/>
+                        </interval>
+                        <parameter-ref name="TSB-value"/>
+                    </change-def>
+                </parameter-def>
+                <parameter-def name="TSB-decrease" type="boolean">
+                    <qualitative-parameter-def>
+                        <limits>
+                            <context>
+                                <any/>
+                            </context>
+                            <negative-infinite/>
+                            <limit-entry include-limit-value="yes" value="0"/>
+                            <positive-infinite/>
+                        </limits>
+                        <parameter-ref name="TSB-change"/>
+                    </qualitative-parameter-def>
+                </parameter-def>
+            </parameter-group>
+            <parameter-group title="Other raw parameters">
+                <parameter-def name="birth-date" type="date">
+                    <raw-data-def mode="manual" user-text="What is the birth date?"/>
+                </parameter-def>
+                <parameter-def name="physical-exam-OK" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is the physical exam OK?"/>
+                </parameter-def>
+                <parameter-def name="colour-stools" type="string">
+                    <raw-data-def mode="manual" user-text="What is the colour of the stools?"/>
+                </parameter-def>
+                <parameter-def name="colour-urine" type="string">
+                    <raw-data-def mode="manual" user-text="What is the colour of the urine?"/>
+                </parameter-def>
+                <parameter-def name="direct-serum-bilirubin" type="amount">
+                    <raw-data-def mode="manual" unit="mgdl" user-text="What is the value of direct serum bilirubin?"/>
+                </parameter-def>
+                <parameter-def name="total-urine-bilirubin" type="amount">
+                    <raw-data-def mode="manual" unit="mgdl" user-text="What is the value of total urine bilirubin?"/>
+                </parameter-def>
+                <parameter-def name="term-child" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is the gestational age of the child smaller than 37 w?"/>
+                </parameter-def>
+                <parameter-def name="lethargy" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child lethargy?"/>
+                </parameter-def>
+                <parameter-def name="apnea" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child apnea?"/>
+                </parameter-def>
+                <parameter-def name="tachypnea" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child tachypnea?"/>
+                </parameter-def>
+                <parameter-def name="instable-temperature" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child instable temperature?"/>
+                </parameter-def>
+                <parameter-def name="behavior-changes" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child behavior changes?"/>
+                </parameter-def>
+                <parameter-def name="hepatosplenomegaly" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child hepatosplenomegaly?"/>
+                </parameter-def>
+                <parameter-def name="vomitting" type="boolean">
+                    <raw-data-def mode="manual" user-text="In the child vomitting?"/>
+                </parameter-def>
+                <parameter-def name="feeding-difficulty" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child feeding difficulties?"/>
+                </parameter-def>
+                <parameter-def name="excessive-weight-loss" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child excessive weight loss?"/>
+                </parameter-def>
+                <parameter-def name="bloodtype-mother" type="bloodtype-scale">
+                    <raw-data-def mode="manual" user-text="What is the blood type of the mother?"/>
+                </parameter-def>
+                <parameter-def name="rhesustype-mother" type="rhesustype-scale">
+                    <raw-data-def mode="manual" user-text="What is the rhesus type of the mother?"/>
+                </parameter-def>
+                <parameter-def name="serum-isoimmune-antibodies-mother" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the mother's blood isoimmune antibodies?"/>
+                </parameter-def>
+                <parameter-def name="bloodtype-child" type="bloodtype-scale">
+                    <raw-data-def mode="manual" user-text="What is the blood type of the child?"/>
+                </parameter-def>
+                <parameter-def name="rhesustype-child" type="rhesustype-scale">
+                    <raw-data-def mode="manual" user-text="What is the rhesus type of the child?"/>
+                </parameter-def>
+                <parameter-def name="direct-Coombs-test" type="rhesustype-scale">
+                    <raw-data-def mode="manual" user-text="What is the result of the direct Coombs test of the child?"/>
+                </parameter-def>
+                <parameter-def name="family-history" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child a family history of early jaundice or hemolytic anemia?"/>
+                </parameter-def>
+                <parameter-def name="ethnic-origin" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child an ethnic origin associated with hemolytic anemia?"/>
+                </parameter-def>
+                <parameter-def name="geographic-origin" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child a geographic origin associated with hemolytic anemia?"/>
+                </parameter-def>
+                <parameter-def name="early-jaundice" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is there an early jaundice?"/>
+                </parameter-def>
+                <parameter-def name="pallor" type="boolean">
+                    <raw-data-def mode="manual" user-text="Has the child pallor?"/>
+                </parameter-def>
+                <parameter-def name="breastfed-child" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is the child breastfed?"/>
+                </parameter-def>
+            </parameter-group>
+            <parameter-group title="Boolean parameters (they are asked) storing diagnostic information">
+                <parameter-def name="jaundice-clinically-significant" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is there a clinically significant jaundice?"/>
+                </parameter-def>
+                <parameter-def name="par-possibility-of-hemolytic-disease" type="boolean">
+                    <raw-data-def mode="manual" user-text="Is there a posibility of hemolytic disease?"/>
+                </parameter-def>
+            </parameter-group>
+            <!--Boolean variables (they are set) storing diagnostic information-->
+            <!--PV: changed the next 8 variable-def (name,type) to variable-def(name)/scalar-def(type)-->
+            <variable-def name="pathologic-reason">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-hemolytic-disease">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-G6PD">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-cholestatic-disease">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-other-diseases">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-isoimmune-hemolytic-disease">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <variable-def name="possibility-of-inherited-disease">
+                <scalar-def type="boolean"/>
+            </variable-def>
+            <!--Other boolean variables-->
+            <variable-def name="consider-holding-cord-blood">
+                <scalar-def type="boolean"/>
+            </variable-def>
+        </domain>
+    </domain-defs>
+    <plans>
+        <plan-group>
+            <plan name="Hyperbilirubinemia">
+                <intentions>
+                    <intention type="intermediate-state" verb="avoid">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <constant-ref name="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <abort-condition>
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="possibility-of-hemolytic-disease"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <constant-ref name="yes"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="unordered" wait-for-optional-subplans="yes">
+                        <wait-for>
+                            <static-plan-pointer plan-name="Diagnostics-and-Treatment-hyperbilirubinemia"/>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Check-for-rapid-TSB-increase"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Check-for-jaundice-after-2-weeks"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Check-for-jaundice-after-3-weeks"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Diagnostics-and-Treatment-hyperbilirubinemia"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Check-for-rapid-TSB-increase">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <simple-condition-combination type="and">
+                                <is-known-variable name="possibility-of-G6PD"/>
+                                <is-known-variable name="possibility-of-hemolytic-disease"/>
+                            </simple-condition-combination>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <constraint-combination type="and">
+                            <parameter-proposition parameter-name="TSB-decrease">
+                                <value-description type="equal">
+                                    <qualitative-constant value="no"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <parameter-proposition parameter-name="TSB-change">
+                                <value-description type="greater-than">
+                                    <numerical-constant value="0.5"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                        </constraint-combination>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <variable-assignment variable="possibility-of-hemolytic-disease">
+                            <constant-ref name="yes"/>
+                        </variable-assignment>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="age"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="day2"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="possibility-of-G6PD">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                                <plan-activation>
+                                    <plan-schema name="Exit-possibility-of-G6PD"/>
+                                </plan-activation>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-G6PD">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                                <plan-activation>
+                                    <plan-schema name="Exit-possibility-of-hemolytic-disease"/>
+                                </plan-activation>
+                            </else-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Exit-possibility-of-G6PD" title="Exit this protocol. Perform appropriate laboratory assessment (possibility of hemolytic disease, probably caused by G6PD).">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Exit-possibility-of-hemolytic-disease" title="Exit this protocol. Perform appropriate laboratory assessment (possibility of hemolytic disease).">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Check-for-jaundice-after-2-weeks">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <is-known-variable name="possibility-of-cholestatic-disease"/>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="jaundice-clinically-significant">
+                            <value-description type="equal">
+                                <constant-ref name="yes"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <time-range>
+                                    <starting-shift>
+                                        <latest>
+                                            <numerical-constant scale="time" unit="w" value="2"/>
+                                        </latest>
+                                    </starting-shift>
+                                    <finishing-shift>
+                                        <earliest>
+                                            <numerical-constant scale="time" unit="w" value="2"/>
+                                        </earliest>
+                                    </finishing-shift>
+                                </time-range>
+                                <reference-point>
+                                    <variable-ref name="birth-date"/>
+                                </reference-point>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <all/>
+                            </wait-for>
+                            <ask>
+                                <parameter-ref name="physical-exam-OK"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="colour-stools"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="colour-urine"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                        </subplans>
+                        <if-then-else>
+                            <simple-condition>
+                                <simple-condition-combination type="or">
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="physical-exam-OK"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="no"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="colour-stools"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <string-constant value="&quot;light&quot;"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="colour-urine"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <string-constant value="&quot;dark&quot;"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                </simple-condition-combination>
+                            </simple-condition>
+                            <then-branch>
+                                <ask>
+                                    <parameter-ref name="direct-serum-bilirubin"/>
+                                    <time-out>
+                                        <now/>
+                                    </time-out>
+                                </ask>
+                                <variable-assignment variable="possibility-of-cholestatic-disease">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                                <plan-activation>
+                                    <plan-schema name="Exit-possibility-of-cholestatic-jaundice"/>
+                                </plan-activation>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-cholestatic-disease">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                                <plan-activation>
+                                    <plan-schema name="Exit-provide-routine-care"/>
+                                </plan-activation>
+                            </else-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Exit-possibility-of-cholestatic-jaundice" title="Perform appropriate laboratory assessment, including possibility of cholestatic jaundice.">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Exit-provide-routine-care" title="Provide routine care, recommend routine feeding and follow-up.">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Check-for-jaundice-after-3-weeks">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <is-known-variable name="possibility-of-cholestatic-disease"/>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="jaundice-clinically-significant">
+                            <value-description type="equal">
+                                <constant-ref name="yes"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <time-range>
+                                    <starting-shift>
+                                        <latest>
+                                            <numerical-constant scale="time" unit="w" value="3"/>
+                                        </latest>
+                                    </starting-shift>
+                                    <finishing-shift>
+                                        <earliest>
+                                            <numerical-constant scale="time" unit="w" value="3"/>
+                                        </earliest>
+                                    </finishing-shift>
+                                </time-range>
+                                <reference-point>
+                                    <variable-ref name="birth-date"/>
+                                </reference-point>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <all/>
+                            </wait-for>
+                            <ask>
+                                <parameter-ref name="TSB-value"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="direct-serum-bilirubin"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="total-urine-bilirubin"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                        </subplans>
+                        <variable-assignment variable="possibility-of-cholestatic-disease">
+                            <qualitative-constant value="yes"/>
+                        </variable-assignment>
+                        <plan-activation>
+                            <plan-schema name="Exit-possibility-of-cholestatic-jaundice"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Diagnostics-and-Treatment-hyperbilirubinemia">
+                <intentions>
+                    <intention type="intermediate-state" verb="avoid">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <constant-ref name="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <complete-condition>
+                        <constraint-combination type="or">
+                            <simple-condition>
+                                <explanation text="Follow this infant into routine clinical supervision."/>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="jaundice-clinically-significant"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="no"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <plan-state-constraint state="completed">
+                                <plan-pointer>
+                                    <static-plan-pointer plan-name="Treatment-hyperbilirubinemia"/>
+                                </plan-pointer>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </plan-state-constraint>
+                        </constraint-combination>
+                    </complete-condition>
+                    <abort-condition>
+                        <constraint-combination type="or">
+                            <simple-condition>
+                                <explanation text="Exiting the protocol to individualized clinical evaluation, including assessment of jaundice in light of prematurity."/>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="term-child"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="no"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <simple-condition>
+                                <explanation text="Exiting the protocol to individualized clinical evaluation, including assessment of jaundice and non-isoimmune hemolytic disease."/>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="age"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="day1"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <variable-ref name="pathologic-reason"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="yes"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                        </constraint-combination>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <none/>
+                        </wait-for>
+                        <ask>
+                            <parameter-ref name="term-child"/>
+                            <time-out>
+                                <now/>
+                            </time-out>
+                        </ask>
+                        <ask>
+                            <parameter-ref name="age-child"/>
+                            <time-out>
+                                <now/>
+                            </time-out>
+                        </ask>
+                        <plan-activation>
+                            <plan-schema name="Diagnostics-hyperbilirubinemia"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Treatment-hyperbilirubinemia"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Diagnostics-hyperbilirubinemia">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <constraint-combination type="and">
+                            <simple-condition>
+                                <is-known-variable name="pathologic-reason"/>
+                            </simple-condition>
+                            <parameter-proposition parameter-name="jaundice-clinically-significant">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                        </constraint-combination>
+                    </intention>
+                </intentions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <variable-assignment variable="pathologic-reason">
+                            <qualitative-constant value="no"/>
+                        </variable-assignment>
+                        <plan-activation>
+                            <plan-schema name="Anamnesis-abnormal-signs"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Blood-tests"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Anamnesis-hemolytic-disease"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Jaundice-determination"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Anamnesis-abnormal-signs">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <is-known-variable name="possibility-of-other-diseases"/>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <abort-condition>
+                        <simple-condition>
+                            <explanation text="Exiting the protocol to individualized clinical evaluation, including assessment of jaundice and underlying disease."/>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <variable-ref name="pathologic-reason"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="yes"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <all/>
+                            </wait-for>
+                            <ask>
+                                <parameter-ref name="lethargy"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="apnea"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="tachypnea"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="instable-temperature"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="behavior-changes"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="hepatosplenomegaly"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="vomitting"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="feeding-difficulty"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="excessive-weight-loss"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                        </subplans>
+                        <if-then-else>
+                            <simple-condition>
+                                <simple-condition-combination type="or">
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="lethargy"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="apnea"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="tachypnea"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="instable-temperature"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="behavior-changes"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="hepatosplenomegaly"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="vomitting"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="feeding-difficulty"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="excessive-weight-loss"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                </simple-condition-combination>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="possibility-of-other-diseases">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-other-diseases">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                            </else-branch>
+                        </if-then-else>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <variable-ref name="possibility-of-other-diseases"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="yes"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="pathologic-reason">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Blood-tests">
+                <plan-body>
+                    <subplans type="sequentially" wait-for-optional-subplans="yes">
+                        <wait-for>
+                            <wait-for-group type="or">
+                                <static-plan-pointer plan-name="Check-blood-test-mother"/>
+                                <static-plan-pointer plan-name="Perform-blood-test-child"/>
+                            </wait-for-group>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Check-blood-test-mother"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Perform-blood-test-child"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Check-blood-test-mother">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <is-known-variable name="consider-holding-cord-blood"/>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <constraint-combination label="blood-test-mother-available" type="and">
+                            <parameter-proposition parameter-name="bloodtype-mother">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <parameter-proposition parameter-name="rhesustype-mother">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <parameter-proposition parameter-name="serum-isoimmune-antibodies-mother">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                        </constraint-combination>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <if-then-else>
+                        <simple-condition>
+                            <simple-condition-combination type="or">
+                                <simple-condition-combination type="and">
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="rhesustype-mother"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="positive"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="serum-isoimmune-antibodies-mother"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="negative"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                </simple-condition-combination>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="bloodtype-mother"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="O"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition-combination>
+                        </simple-condition>
+                        <then-branch>
+                            <variable-assignment variable="consider-holding-cord-blood">
+                                <qualitative-constant value="yes"/>
+                            </variable-assignment>
+                            <plan-activation>
+                                <plan-schema name="Consider-holding-cord-blood"/>
+                            </plan-activation>
+                        </then-branch>
+                        <else-branch>
+                            <variable-assignment variable="consider-holding-cord-blood">
+                                <qualitative-constant value="no"/>
+                            </variable-assignment>
+                        </else-branch>
+                    </if-then-else>
+                </plan-body>
+            </plan>
+            <plan name="Consider-holding-cord-blood" title="Consider holding infant's cord blood in a blood bank in case future testing is necessary">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Perform-blood-test-child">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <constraint-combination type="and">
+                            <parameter-proposition parameter-name="bloodtype-child">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <parameter-proposition parameter-name="rhesustype-child">
+                                <is-known-parameter/>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <simple-condition>
+                                <is-known-variable name="possibility-of-isoimmune-hemolytic-disease"/>
+                            </simple-condition>
+                        </constraint-combination>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <constraint-combination type="or">
+                            <constraint-not>
+                                <refer-to label="blood-test-mother-available" plan-name="Check-blood-test-mother"/>
+                            </constraint-not>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="rhesustype-mother"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="negative"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="serum-isoimmune-antibodies-mother"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="positive"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                        </constraint-combination>
+                    </filter-precondition>
+                    <abort-condition>
+                        <simple-condition>
+                            <explanation text="Exiting the protocol to individualized clinical evaluation, including assessment of jaundice and isoimmune hemolytic disease (positive Coombs test)."/>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <variable-ref name="pathologic-reason"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="yes"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <all/>
+                            </wait-for>
+                            <ask>
+                                <parameter-ref name="bloodtype-child"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="rhesustype-child"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="direct-Coombs-test"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                        </subplans>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="direct-Cooms-test"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="positive"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="possibility-of-isoimmune-hemolytic-disease">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-isoimmune-hemolytic-disease">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                            </else-branch>
+                        </if-then-else>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <variable-ref name="possibility-of-isoimmune-hemolytic-disease"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="yes"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="pathologic-reason">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Anamnesis-hemolytic-disease">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <simple-condition-combination type="and">
+                                <is-known-variable name="possibility-of-hemolytic-disease"/>
+                                <is-known-variable name="possibility-of-inherited-disease"/>
+                            </simple-condition-combination>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <abort-condition>
+                        <simple-condition>
+                            <explanation text="Exiting the protocol to individualized clinical evaluation, including assessment of jaundice and non-isoimmune hemolytic disease."/>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <variable-ref name="pathologic-reason"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="yes"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <all/>
+                            </wait-for>
+                            <ask>
+                                <parameter-ref name="family-history"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="ethnic-origin"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="geographic-origin"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="early-jaundice"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="pallor"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                            <ask>
+                                <parameter-ref name="hepatosplenomegaly"/>
+                                <time-out>
+                                    <now/>
+                                </time-out>
+                            </ask>
+                        </subplans>
+                        <if-then-else>
+                            <simple-condition>
+                                <simple-condition-combination type="or">
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="family-history"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="ethnic-origin"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="geographic-origin"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <parameter-ref name="early-jaundice"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                </simple-condition-combination>
+                            </simple-condition>
+                            <then-branch>
+                                <plan-activation>
+                                    <plan-schema name="Investigate-possibility-of-hemolytic-disease"/>
+                                </plan-activation>
+                                <ask>
+                                    <parameter-ref name="par-possibility-of-hemolytic-disease"/>
+                                    <time-out>
+                                        <now/>
+                                    </time-out>
+                                </ask>
+                                <if-then-else>
+                                    <simple-condition>
+                                        <comparison type="equal">
+                                            <left-hand-side>
+                                                <parameter-ref name="par-possibility-of-hemolytic-disease"/>
+                                            </left-hand-side>
+                                            <right-hand-side>
+                                                <qualitative-constant value="yes"/>
+                                            </right-hand-side>
+                                        </comparison>
+                                    </simple-condition>
+                                    <then-branch>
+                                        <variable-assignment variable="possibility-of-hemolytic-disease">
+                                            <qualitative-constant value="yes"/>
+                                        </variable-assignment>
+                                    </then-branch>
+                                </if-then-else>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-hemolytic-disease">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                            </else-branch>
+                        </if-then-else>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="ethnic-origin"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="yes"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="possibility-of-inherited-disease">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                            <else-branch>
+                                <variable-assignment variable="possibility-of-inherited-disease">
+                                    <qualitative-constant value="no"/>
+                                </variable-assignment>
+                            </else-branch>
+                        </if-then-else>
+                        <if-then-else>
+                            <simple-condition>
+                                <simple-condition-combination type="or">
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <variable-ref name="possibility-of-hemolytic-disease"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                    <comparison type="equal">
+                                        <left-hand-side>
+                                            <variable-ref name="possibility-of-inherited-disease"/>
+                                        </left-hand-side>
+                                        <right-hand-side>
+                                            <qualitative-constant value="yes"/>
+                                        </right-hand-side>
+                                    </comparison>
+                                </simple-condition-combination>
+                            </simple-condition>
+                            <then-branch>
+                                <variable-assignment variable="pathologic-reason">
+                                    <qualitative-constant value="yes"/>
+                                </variable-assignment>
+                            </then-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Investigate-possibility-of-hemolytic-disease" title="Perform appropriate laboratory assessment  of infant including (but not limited to): (1) complete blood count, differential smear, reticulocyte count; (2) G6PD screen; (3) hemoglobin electrophoresis.">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Jaundice-determination">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <parameter-proposition parameter-name="jaundice-clinically-significant">
+                            <is-known-parameter/>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </intention>
+                </intentions>
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <one/>
+                            </wait-for>
+                            <plan-activation>
+                                <plan-schema name="Blanching-skin-with-digital-pressure-test"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Icterometer-test"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Transcutaneous-jaundice-meter-test"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Determine-extent-cephalocaudad-progression"/>
+                            </plan-activation>
+                        </subplans>
+                        <ask>
+                            <parameter-ref name="jaundice-clinically-significant"/>
+                            <time-out>
+                                <now/>
+                            </time-out>
+                        </ask>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Blanching-skin-with-digital-pressure-test" title="Blanching sking with digital pressure test">
+                <!--PV: activate-mode changed to filter-precondition (confirmation-required=yes)-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Icterometer-test" title="Icterometer test">
+                <!--PV: activate-mode changed to filter-precondition (confirmation-required=yes)-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Transcutaneous-jaundice-meter-test" title="Transcutaneous jaundice meter test">
+                <!--PV: activate-mode changed to filter-precondition (confirmation-required=yes)-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Determine-extent-cephalocaudad-progression" title="Determine extent cephalocaudad progression">
+                <!--PV: activate-mode changed to filter-precondition (confirmation-required=yes)-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Treatment-hyperbilirubinemia">
+                <intentions>
+                    <intention type="intermediate-state" verb="avoid">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="observation"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <plan-body>
+                    <subplans type="parallel">
+                        <wait-for>
+                            <one/>
+                            <!--...which means: wait-for any-order block-->
+                        </wait-for>
+                        <subplans type="any-order">
+                            <wait-for>
+                                <wait-for-group type="or">
+                                    <static-plan-pointer plan-name="Regular-treatments"/>
+                                    <static-plan-pointer plan-name="Exchange-transfusion"/>
+                                </wait-for-group>
+                            </wait-for>
+                            <plan-activation>
+                                <plan-schema name="Regular-treatments"/>
+                                <on-abort>
+                                    <plan-activation>
+                                        <plan-schema name="Exchange-transfusion"/>
+                                    </plan-activation>
+                                </on-abort>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Exchange-transfusion"/>
+                            </plan-activation>
+                        </subplans>
+                        <cyclical-plan>
+                            <!--PV: start-time inserted - used 'now' for expressions-->
+                            <start-time>
+                                <cyclical-time-annotation>
+                                    <time-range>
+                                        <not-yet-defined/>
+                                    </time-range>
+                                    <set-of-cyclical-time-points>
+                                        <not-yet-defined/>
+                                        <time-point>
+                                            <now/>
+                                        </time-point>
+                                        <offset>
+                                            <now/>
+                                        </offset>
+                                        <frequency>
+                                            <now/>
+                                        </frequency>
+                                    </set-of-cyclical-time-points>
+                                </cyclical-time-annotation>
+                            </start-time>
+                            <cyclical-plan-body>
+                                <subplans type="sequentially">
+                                    <wait-for>
+                                        <all/>
+                                    </wait-for>
+                                    <ask>
+                                        <parameter-ref name="TSB-value"/>
+                                        <time-out>
+                                            <now/>
+                                        </time-out>
+                                    </ask>
+                                    <ask>
+                                        <parameter-ref name="age-child"/>
+                                        <time-out>
+                                            <now/>
+                                        </time-out>
+                                    </ask>
+                                </subplans>
+                            </cyclical-plan-body>
+                            <repeat-specification>
+                                <retry-delay>
+                                    <minimum>
+                                        <numerical-constant scale="time" unit="h" value="12"/>
+                                    </minimum>
+                                    <maximum>
+                                        <numerical-constant scale="time" unit="h" value="24"/>
+                                    </maximum>
+                                </retry-delay>
+                            </repeat-specification>
+                        </cyclical-plan>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Regular-treatments">
+                <intentions>
+                    <intention type="intermediate-state" verb="avoid">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="observation"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="not-equal">
+                                <qualitative-constant value="transfusion"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                    <abort-condition>
+                        <constraint-combination type="or">
+                            <parameter-proposition parameter-name="bilirubin">
+                                <value-description type="equal">
+                                    <qualitative-constant value="transfusion"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <refer-to label="intensive-photohterapy-failure" plan-name="Phototherapy-intensive"/>
+                        </constraint-combination>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="unordered">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Feeding-alternatives"/>
+                        </plan-activation>
+                        <subplans retry-aborted-subplans="yes" type="any-order">
+                            <wait-for>
+                                <static-plan-pointer plan-name="Observation"/>
+                            </wait-for>
+                            <plan-activation>
+                                <plan-schema name="Phototherapy-intensive"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Phototherapy-normal-prescription"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Phototherapy-normal-recommendation"/>
+                            </plan-activation>
+                            <plan-activation>
+                                <plan-schema name="Observation"/>
+                            </plan-activation>
+                        </subplans>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Feeding-alternatives">
+                <plan-body>
+                    <subplans type="sequentially">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <ask>
+                            <parameter-ref name="breastfed-child"/>
+                            <time-out>
+                                <now/>
+                            </time-out>
+                        </ask>
+                        <if-then-else>
+                            <simple-condition>
+                                <comparison type="equal">
+                                    <left-hand-side>
+                                        <parameter-ref name="breastfed-child"/>
+                                    </left-hand-side>
+                                    <right-hand-side>
+                                        <qualitative-constant value="yes"/>
+                                    </right-hand-side>
+                                </comparison>
+                            </simple-condition>
+                            <then-branch>
+                                <plan-activation>
+                                    <plan-schema name="Choose-feeding-alternative"/>
+                                </plan-activation>
+                            </then-branch>
+                        </if-then-else>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Choose-feeding-alternative">
+                <plan-body>
+                    <subplans type="any-order">
+                        <wait-for>
+                            <one/>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Breastfeeding"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Breastfeeding-with-formula"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Formula-only"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Breastfeeding" title="Breastfeeding">
+                <conditions>
+                    <!--PV: activate-mode changed to filter-precondition-->
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Breastfeeding-with-formula" title="Breastfeeding with formula">
+                <!--PV: activate-mode changed to filter-precondition-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Formula-only" title="Formula only">
+                <!--PV: activate-mode changed to filter-precondition-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Phototherapy-intensive">
+                <conditions>
+                    <filter-precondition>
+                        <constraint-combination type="or">
+                            <parameter-proposition parameter-name="bilirubin">
+                                <value-description type="equal">
+                                    <qualitative-constant value="phototherapy-intensive"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <refer-to label="normal-phototherapy-failure" plan-name="Phototherapy-normal-prescription"/>
+                        </constraint-combination>
+                    </filter-precondition>
+                    <abort-condition>
+                        <constraint-combination type="or">
+                            <constraint-combination type="and">
+                                <parameter-proposition parameter-name="bilirubin">
+                                    <value-description type="not-equal">
+                                        <qualitative-constant value="phototherapy-intensive"/>
+                                    </value-description>
+                                    <context>
+                                        <any/>
+                                    </context>
+                                    <time-annotation>
+                                        <now/>
+                                    </time-annotation>
+                                </parameter-proposition>
+                                <!--...I would have preferred constraint-not + refer-to normal-phototherapy-failure here-->
+                                <constraint-not>
+                                    <constraint-combination type="and">
+                                        <parameter-proposition parameter-name="bilirubin">
+                                            <value-description type="equal">
+                                                <qualitative-constant value="phototherapy-normal"/>
+                                            </value-description>
+                                            <context>
+                                                <any/>
+                                            </context>
+                                            <time-annotation>
+                                                <now/>
+                                            </time-annotation>
+                                        </parameter-proposition>
+                                        <parameter-proposition parameter-name="TSB-decrease">
+                                            <value-description type="equal">
+                                                <qualitative-constant value="no"/>
+                                            </value-description>
+                                            <context>
+                                                <any/>
+                                            </context>
+                                            <time-annotation>
+                                                <now/>
+                                            </time-annotation>
+                                        </parameter-proposition>
+                                    </constraint-combination>
+                                </constraint-not>
+                            </constraint-combination>
+                            <constraint-combination label="intensive-phototherapy-failure" type="and">
+                                <explanation text="Failure of intensive phototherapy. Perform appropriate laboratory assessment (possibility of hemolytic disease)."/>
+                                <parameter-proposition parameter-name="bilirubin">
+                                    <value-description type="equal">
+                                        <qualitative-constant value="phototherapy-intensive"/>
+                                    </value-description>
+                                    <context>
+                                        <any/>
+                                    </context>
+                                    <time-annotation>
+                                        <now/>
+                                    </time-annotation>
+                                </parameter-proposition>
+                                <constraint-combination type="or">
+                                    <constraint-combination type="and">
+                                        <parameter-proposition parameter-name="TSB-decrease">
+                                            <value-description type="equal">
+                                                <qualitative-constant value="yes"/>
+                                            </value-description>
+                                            <context>
+                                                <any/>
+                                            </context>
+                                            <time-annotation>
+                                                <time-range>
+                                                    <starting-shift>
+                                                        <earliest>
+                                                            <numerical-constant scale="time" unit="h" value="4"/>
+                                                        </earliest>
+                                                    </starting-shift>
+                                                    <finishing-shift>
+                                                        <latest>
+                                                            <numerical-constant scale="time" unit="h" value="6"/>
+                                                        </latest>
+                                                    </finishing-shift>
+                                                </time-range>
+                                                <self/>
+                                            </time-annotation>
+                                        </parameter-proposition>
+                                        <parameter-proposition parameter-name="TSB-change">
+                                            <value-description type="less-than">
+                                                <qualitative-constant value="1"/>
+                                            </value-description>
+                                            <context>
+                                                <any/>
+                                            </context>
+                                            <time-annotation>
+                                                <time-range>
+                                                    <starting-shift>
+                                                        <earliest>
+                                                            <numerical-constant scale="time" unit="h" value="4"/>
+                                                        </earliest>
+                                                    </starting-shift>
+                                                    <finishing-shift>
+                                                        <latest>
+                                                            <numerical-constant scale="time" unit="h" value="6"/>
+                                                        </latest>
+                                                    </finishing-shift>
+                                                </time-range>
+                                                <self/>
+                                            </time-annotation>
+                                        </parameter-proposition>
+                                    </constraint-combination>
+                                    <parameter-proposition parameter-name="TSB-decrease">
+                                        <value-description type="equal">
+                                            <qualitative-constant value="no"/>
+                                        </value-description>
+                                        <context>
+                                            <any/>
+                                        </context>
+                                        <time-annotation>
+                                            <time-range>
+                                                <starting-shift>
+                                                    <earliest>
+                                                        <numerical-constant scale="time" unit="h" value="4"/>
+                                                    </earliest>
+                                                </starting-shift>
+                                            </time-range>
+                                            <self/>
+                                        </time-annotation>
+                                    </parameter-proposition>
+                                </constraint-combination>
+                            </constraint-combination>
+                        </constraint-combination>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <plan-activation>
+                        <plan-schema name="Prescribe-intensive-phototherapy"/>
+                    </plan-activation>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-intensive-phototherapy" title="Prescribe intensive phototherapy ">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Phototherapy-normal-prescription">
+                <intentions>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="observation"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="equal">
+                                <qualitative-constant value="phototherapy-normal"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                    <abort-condition>
+                        <constraint-combination type="or">
+                            <parameter-proposition parameter-name="bilirubin">
+                                <value-description type="not-equal">
+                                    <qualitative-constant value="phototherapy-normal"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <constraint-combination label="normal-phototherapy-failure" type="and">
+                                <parameter-proposition parameter-name="bilirubin">
+                                    <value-description type="equal">
+                                        <qualitative-constant value="phototherapy-normal"/>
+                                    </value-description>
+                                    <context>
+                                        <any/>
+                                    </context>
+                                    <time-annotation>
+                                        <now/>
+                                    </time-annotation>
+                                </parameter-proposition>
+                                <!--To revieW!-->
+                                <parameter-proposition parameter-name="TSB-decrease">
+                                    <value-description type="equal">
+                                        <qualitative-constant value="no"/>
+                                    </value-description>
+                                    <context>
+                                        <any/>
+                                    </context>
+                                    <time-annotation>
+                                        <now/>
+                                    </time-annotation>
+                                </parameter-proposition>
+                            </constraint-combination>
+                        </constraint-combination>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <plan-activation>
+                        <plan-schema name="Prescribe-normal-phototherapy"/>
+                    </plan-activation>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-normal-phototherapy" title="Prescribe normal phototherapy ">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Phototherapy-normal-recommendation">
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="equal">
+                                <qualitative-constant value="phototherapy-recommended"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                    <abort-condition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="not-equal">
+                                <qualitative-constant value="phototherapy-recommended"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <subplans type="any-order">
+                        <wait-for>
+                            <one/>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Prescribe-observation-manual-activation"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Prescribe-normal-phototherapy-manual-activation"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-observation-manual-activation" title="Prescribe observation">
+                <!--PV: activate-mode changed to filter-precondition-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-normal-phototherapy-manual-activation" title="Prescribe normal phototherapy">
+                <!--PV: activate-mode changed to filter-precondition-->
+                <conditions>
+                    <filter-precondition confirmation-required="yes">
+                        <none/>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Observation">
+                <intentions>
+                    <intention type="intermediate-state" verb="maintain">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="observation"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="equal">
+                                <qualitative-constant value="observation"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </filter-precondition>
+                    <abort-condition>
+                        <parameter-proposition parameter-name="bilirubin">
+                            <value-description type="not-equal">
+                                <qualitative-constant value="observation"/>
+                            </value-description>
+                            <context>
+                                <any/>
+                            </context>
+                            <time-annotation>
+                                <now/>
+                            </time-annotation>
+                        </parameter-proposition>
+                    </abort-condition>
+                </conditions>
+                <plan-body>
+                    <plan-activation>
+                        <plan-schema name="Prescribe-observation"/>
+                    </plan-activation>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-observation" title="Prescribe observation">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+            <plan name="Exchange-transfusion">
+                <intentions>
+                    <intention type="intermediate-state" verb="avoid">
+                        <simple-condition>
+                            <comparison type="equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                    <intention type="overall-state" verb="achieve">
+                        <simple-condition>
+                            <comparison type="not-equal">
+                                <left-hand-side>
+                                    <parameter-ref name="bilirubin"/>
+                                </left-hand-side>
+                                <right-hand-side>
+                                    <qualitative-constant value="transfusion"/>
+                                </right-hand-side>
+                            </comparison>
+                        </simple-condition>
+                    </intention>
+                </intentions>
+                <conditions>
+                    <filter-precondition>
+                        <constraint-combination type="or">
+                            <parameter-proposition parameter-name="bilirubin">
+                                <value-description type="equal">
+                                    <qualitative-constant value="transfusion"/>
+                                </value-description>
+                                <context>
+                                    <any/>
+                                </context>
+                                <time-annotation>
+                                    <now/>
+                                </time-annotation>
+                            </parameter-proposition>
+                            <refer-to label="intensive-phototherapy-failure" plan-name="Phototherapy-intensive"/>
+                        </constraint-combination>
+                    </filter-precondition>
+                </conditions>
+                <plan-body>
+                    <subplans type="parallel">
+                        <wait-for>
+                            <all/>
+                        </wait-for>
+                        <plan-activation>
+                            <plan-schema name="Prescribe-intensive-phototherapy"/>
+                        </plan-activation>
+                        <plan-activation>
+                            <plan-schema name="Prescribe-exchange-transfusion"/>
+                        </plan-activation>
+                    </subplans>
+                </plan-body>
+            </plan>
+            <plan name="Prescribe-exchange-transfusion" title="Prescribe exchange transfusion">
+                <plan-body>
+                    <user-performed/>
+                </plan-body>
+            </plan>
+        </plan-group>
+    </plans>
+</plan-library>

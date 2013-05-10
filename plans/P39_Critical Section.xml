@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="complete_B" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P39" title="Critical Section">
+  			<plan-body>
+  				<subplans type="parallel">
+  					<wait-for>
+						<all/>		
+  					</wait-for>
+  					<subplans type="sequentially">
+  						<wait-for>
+  							<all/>
+  						</wait-for>
+  						<plan-activation>
+  							<plan-schema name="B" />
+  						</plan-activation>
+  						<plan-activation>
+  							<plan-schema name="CS_1"/>
+  						</plan-activation>
+  					</subplans>
+  					<subplans type="sequentially">
+  						<wait-for>
+  							<all/>
+  						</wait-for>
+  						<plan-activation>
+  							<plan-schema name="C" />
+  						</plan-activation>
+  						<plan-activation>
+  							<plan-schema name="CS_2"/>
+  						</plan-activation>
+  					</subplans>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="CS_1">
+  			<conditions>
+  				<setup-precondition>
+  					<constraint-not>
+	  					<plan-state-constraint state="activated">
+  							<plan-pointer>
+  								<static-plan-pointer plan-name="CS_2"/>
+  							</plan-pointer>
+  							<time-annotation>
+  								<now/>
+  							</time-annotation>
+	  					</plan-state-constraint>
+	  				</constraint-not>
+  				</setup-precondition>
+  			</conditions>
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="D"/>
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="F"/>
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="CS_2">
+  			<conditions>
+  				<setup-precondition>
+  					<constraint-not>
+  						<plan-state-constraint state="activated">
+  							<plan-pointer>
+  								<static-plan-pointer plan-name="CS_1"/>
+  							</plan-pointer>
+  							<time-annotation>
+  								<now/>
+  							</time-annotation>
+  						</plan-state-constraint>
+  					</constraint-not>
+  				</setup-precondition>
+  			</conditions>
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="E"/>
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="G"/>
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="D">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-3" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="E">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-2" unit="s"/>
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="F">
+  			<conditions>
+  				<complete-condition>
+					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>  				
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="G">
+  			<conditions>
+  				<complete-condition>
+					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>  				
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="B">
+  			<conditions>
+  				<complete-condition>
+					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>  				
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="C">
+  			<conditions>
+  				<complete-condition>
+					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>  				
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

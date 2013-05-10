@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="repeat" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P21" title="Structured Loop">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Cyclical_Plan" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Post_Plan" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+		<plan name="Cyclical_Plan" title="Cyclical Plan">
+			<defaults>
+				<time-annotation>
+					<time-range>
+						<duration>
+							<maximum>
+								<numerical-constant value="10" unit="s" />
+							</maximum>
+						</duration>
+					</time-range>
+					<self/>
+				</time-annotation>
+			</defaults>
+			<conditions>
+				<complete-condition>
+					<constraint-combination type="and">
+						<parameter-proposition parameter-name="repeat">
+							<value-description type="equal">
+								<qualitative-constant value="no" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<now />
+							</time-annotation>
+						</parameter-proposition>
+						<constraint-not>
+							<plan-state-constraint state="activated">
+								<plan-pointer>
+									<static-plan-pointer plan-name="Repeat" />
+								</plan-pointer>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</plan-state-constraint>
+						</constraint-not>
+					</constraint-combination>
+				</complete-condition>
+			</conditions>
+  			<plan-body>
+  				<cyclical-plan>
+  					<cyclical-plan-body>
+  						<plan-activation>
+  							<plan-schema name="Repeat" />
+  						</plan-activation>
+  					</cyclical-plan-body>
+  					<cyclical-time-annotation>
+  						<time-range />
+  						<set-of-cyclical-time-points>
+  							<time-point>
+  								<now/>
+  							</time-point>
+  							<offset>
+  								<numerical-constant value="0"/>
+  							</offset>
+  							<frequency>
+  								<numerical-constant value="2" unit="s"/>
+  							</frequency>
+  						</set-of-cyclical-time-points>
+  					</cyclical-time-annotation>
+  				</cyclical-plan>
+  			</plan-body>
+  		</plan>
+  		<plan name="Repeat">
+  			<defaults>
+  				<time-annotation>
+  					<time-range>
+  						<duration>
+  							<minimum>
+  								<numerical-constant value="1" unit="s" />
+  							</minimum>
+  						</duration>
+  					</time-range>
+					<now />
+  				</time-annotation>
+  			</defaults>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Post_Plan">
+  			<defaults>
+  				<time-annotation>
+  					<time-range>
+  						<duration>
+  							<minimum>
+  								<numerical-constant value="1"/>
+  							</minimum>
+  							<maximum>
+  								<numerical-constant value="2"/>
+  							</maximum>
+  						</duration>
+  					</time-range>
+  					<self/>
+  				</time-annotation>
+  			</defaults>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

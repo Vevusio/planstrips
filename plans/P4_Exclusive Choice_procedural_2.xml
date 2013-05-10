@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="cond1" required="no" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+				<parameter-def name="cond2" required="no" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P4" title="root">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Exclusive_Choice" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Exclusive_Choice" title="Exclusive Choice">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<one />
+						</wait-for>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="cond1" />
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Plan_A" />
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="cond2" />
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Plan_B" />
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-not>
+									<simple-condition-combination type="and">
+										<comparison type="equal">
+											<left-hand-side>
+												<parameter-ref name="cond1" />
+											</left-hand-side>
+											<right-hand-side>
+												<qualitative-constant value="true" />
+											</right-hand-side>
+										</comparison>
+										<comparison type="equal">
+											<left-hand-side>
+												<parameter-ref name="cond2" />
+											</left-hand-side>
+											<right-hand-side>
+												<qualitative-constant value="true" />
+											</right-hand-side>
+										</comparison>
+									</simple-condition-combination>
+								</simple-condition-not>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Plan_C" />
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_C" title="Plan C">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

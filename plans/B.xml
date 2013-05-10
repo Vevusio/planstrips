@@ -1,0 +1,35 @@
+<plan-library>
+    <library-info title="NewPlanLibrary">
+        <administrative-data original-author="AsbruViewNew"/>
+    </library-info>
+    <domain-defs>
+        <domain name="mainDomain">
+            <not-yet-defined/>
+        </domain>
+    </domain-defs>
+    <plans>
+        <plan-group>
+        <plan name="A" title="">
+            <plan-body>
+                <subplans type="sequentially">
+                    <wait-for>
+                        <all/>
+                    </wait-for>
+                    <plan-activation>
+                        <plan-schema name="AA"/>
+                    </plan-activation>
+                </subplans>
+            </plan-body>
+        </plan>
+        <plan name="AA" title="">
+            <plan-body>
+                <subplans type="sequentially">
+                    <wait-for>
+                        <all/>
+                    </wait-for>
+                </subplans>
+            </plan-body>
+        </plan>
+        </plan-group>
+    </plans>
+</plan-library>

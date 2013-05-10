@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="trigger" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P24" title="Persistent Trigger">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+						<plan-schema name="Plan_A" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan_B" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan_C" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan_D" />
+					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_A">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-4" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_B">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_C">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_D">
+  			<conditions>
+  				<setup-precondition>
+  					<parameter-proposition parameter-name="trigger">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<any />
+  						</time-annotation>
+  					</parameter-proposition>
+  				</setup-precondition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

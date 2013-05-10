@@ -1,0 +1,4169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.0.1 U (http://www.xmlspy.com) by Mar Marcos Lopez (Vrije Universiteit Amsterdam) -->
+<!DOCTYPE plan-library SYSTEM "http://hildegard.asgaard.tuwien.ac.at/~peter/GMT/dtd/asbru_7.3.dtd">
+<?xml-stylesheet type="text/xsl" href="TeXTransform.xsl"?>
+<plan-library>
+	<library-info title="Asbru protocol for the Management of Diabetes Mellitus Type 2 (using 2 parallel lists for treatment)" version="1">
+		<administrative-data creation-date="-" original-author="Mar Marcos">
+			<changes author="Mar Marcos" date="26.2.2002" description="Changes to solve open issues (after CBO experts)"/>
+			<changes author="Mar Marcos" date="23.5.2002" description="Introduction of treatment intentions (after CBO)"/>
+			<changes author="Mar Marcos" date="24.5.2002" description="Last main update"/>
+			<changes author="Mar Marcos" date="28.8.2002" description="Last small update"/>
+		</administrative-data>
+	</library-info>
+	<domain-defs>
+		<domain name="Diabetes-Mellitus-Domain">
+			<unit-def name="mmoll" precision-unit="mmol/l">
+				<compound-def>
+					<numerator>
+						<unit-class name="amount"/>
+					</numerator>
+					<denominator>
+						<unit-class name="volume"/>
+					</denominator>
+				</compound-def>
+			</unit-def>
+			<!--Qualitatite scales-->
+			<qualitative-scale-def name="sex-scale">
+				<qualitative-entry entry="male"/>
+				<qualitative-entry entry="female"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="glucose-evaluation-scale">
+				<qualitative-entry entry="normal"/>
+				<qualitative-entry entry="disturbed"/>
+				<qualitative-entry entry="DMT2"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="glucose-measurement-type-scale">
+				<qualitative-entry entry="blood"/>
+				<qualitative-entry entry="plasma"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="glucose-monitoring-scale">
+				<qualitative-entry entry="good"/>
+				<qualitative-entry entry="acceptable"/>
+				<qualitative-entry entry="bad"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="insulin-type-scale">
+				<qualitative-entry entry="mid-term"/>
+				<qualitative-entry entry="mix"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="insulin-intake-scale">
+				<qualitative-entry entry="before-meal"/>
+				<qualitative-entry entry="after-meal"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="age-scale">
+				<qualitative-entry entry="30ies-and-younger"/>
+				<qualitative-entry entry="40ies"/>
+				<qualitative-entry entry="50ies"/>
+				<qualitative-entry entry="60ies"/>
+				<qualitative-entry entry="70ies"/>
+				<qualitative-entry entry="80ies-and-older"/>
+			</qualitative-scale-def>
+			<qualitative-scale-def name="risk-scale">
+				<qualitative-entry entry="non-significant"/>
+				<qualitative-entry entry="significant"/>
+			</qualitative-scale-def>
+			<!--Patient data (they are referred to but not explicitly asked; also include data introduced for intentions)-->
+			<patient-record-def name="patient-data">
+				<primary-key name="name"/>
+				<field-def name="age" default-unit="y" type="time"/>
+				<field-def name="sex" type="sex-scale"/>
+				<field-def name="triennial-visit" type="Boolean"/>
+				<field-def name="alive" type="Boolean"/>
+				<field-def name="contraindications" type="Boolean"/>
+				<field-def name="side-effects" type="Boolean"/>
+				<!--data for treatment of concurrent diseases and hypoglycemic coma-->
+				<field-def name="fever" type="Boolean"/>
+				<field-def name="vomiting" type="Boolean"/>
+				<field-def name="diarrhea" type="Boolean"/>
+				<field-def name="hypoglycemic-coma" type="Boolean"/>
+				<field-def name="conscious" type="Boolean"/>
+				<!--data for consultation and referrals-->
+				<field-def name="insulin-adjustment-needed" type="Boolean"/>
+				<field-def name="diabetic-ulcus-after-2-weeks" type="Boolean"/>
+				<field-def name="creatinin-clearance" type="amount"/>
+				<field-def name="lethargy" type="Boolean"/>
+				<field-def name="dehydration" type="Boolean"/>
+				<field-def name="hypoglycemic-coma-after-30-min" type="Boolean"/>
+				<field-def name="pressure-points" type="Boolean"/>
+				<field-def name="bad-standing-habits" type="Boolean"/>
+				<field-def name="self-monitoring-training-needed" type="Boolean"/>
+				<field-def name="insulin-treatment-start" type="Boolean"/>
+				<!--data for Cholesterol treatment-->
+				<field-def name="fat-metabolism-problems" type="Boolean"/>
+				<field-def name="life-expectancy" default-unit="y" type="time"/>
+				<field-def name="CV-diseases" type="Boolean"/>
+				<!--data for Microalbuminuria treatment-->
+				<field-def name="microalbuminuria" type="Boolean"/>
+				<field-def name="CH-disease-risk" type="risk-scale"/>
+				<!--data for intentions-->
+				<field-def name="complications" type="Boolean"/>
+				<field-def name="gastrointestinal-side-effects" type="Boolean"/>
+				<field-def name="weight-gain" type="Boolean"/>
+			</patient-record-def>
+			<!--Parameters (they are asked and/or abstracted)-->
+			<parameter-group title="Raw parameters and their abstractions">
+				<parameter-def name="fasting-glucose" type="mmoll">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<parameter-def name="non-fasting-glucose" type="mmoll">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<parameter-def name="glucose-measurement-type" type="glucose-measurement-type-scale">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<parameter-def name="after-breakfast-glucose" type="mmoll">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<parameter-def name="after-lunch-glucose" type="mmoll">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<parameter-def name="after-dinner-glucose" type="mmoll">
+					<raw-data-def mode="manual"/>
+				</parameter-def>
+				<!--Glucose evaluation-->
+				<parameter-def name="fasting-glucose-evaluation" type="glucose-evaluation-scale">
+					<qualitative-parameter-def>
+						<limits unit="mmoll">
+							<context>
+								<one-of name="glucose-measurement-type">
+									<value-ref name="blood"/>
+								</one-of>
+							</context>
+							<negative-infinite/>
+							<limit-entry value="5.6"/>
+							<limit-entry value="6"/>
+							<positive-infinite/>
+						</limits>
+						<limits unit="mmoll">
+							<context>
+								<one-of name="glucose-measurement-type">
+									<value-ref name="plasma"/>
+								</one-of>
+							</context>
+							<negative-infinite/>
+							<limit-entry value="6.1"/>
+							<limit-entry value="6.9"/>
+							<positive-infinite/>
+						</limits>
+						<parameter-ref name="fasting-glucose"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+				<parameter-def name="non-fasting-glucose-evaluation" type="glucose-evaluation-scale">
+					<qualitative-parameter-def>
+						<limits>
+							<context>
+								<any/>
+							</context>
+							<negative-infinite/>
+							<limit-entry value="7.8"/>
+							<limit-entry value="11"/>
+							<positive-infinite/>
+						</limits>
+						<!--To revieW!-->
+						<parameter-ref name="non-fasting-glucose"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+				<parameter-def name="glucose-evaluation" type="glucose-evaluation-scale">
+					<logical-dependency-def>
+						<!--one of the previous evaluations-->
+						<parameter-proposition parameter-name="fasting-glucose-evaluation">
+							<is-known-parameter/>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+						<parameter-ref name="fasting-glucose-evaluation"/>
+						<parameter-proposition parameter-name="non-fasting-glucose-evaluation">
+							<is-known-parameter/>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+						<parameter-ref name="non-fasting-glucose-evaluation"/>
+					</logical-dependency-def>
+				</parameter-def>
+				<!--Glucose monitoring-->
+				<!--Temporarily, average is used for postprandial glucose monitoring-->
+				<parameter-def name="average-postprandial-glucose" type="mmoll">
+					<calculation-def operator="divide">
+						<calculation-def operator="add">
+							<parameter-ref name="after-breakfast-glucose"/>
+							<parameter-ref name="after-lunch-glucose"/>
+							<parameter-ref name="after-dinner-glucose"/>
+						</calculation-def>
+						<numerical-constant value="3"/>
+					</calculation-def>
+				</parameter-def>
+				<parameter-def name="fasting-glucose-monitoring" type="glucose-monitoring-scale">
+					<qualitative-parameter-def>
+						<limits unit="mmoll">
+							<context>
+								<one-of name="DMT2-treatment">
+									<value-ref name="antidiabetics"/>
+								</one-of>
+							</context>
+							<limit-entry value="4"/>
+							<limit-entry value="7"/>
+							<limit-entry value="8"/>
+							<positive-infinite/>
+						</limits>
+						<!--Monitoring of insulin patients (see booklet)-->
+						<limits unit="mmoll">
+							<context>
+								<one-of name="DMT2-treatment">
+									<value-ref name="insulin-plus-antidiabetics"/>
+									<value-ref name="insulin"/>
+								</one-of>
+							</context>
+							<!--Limits are 4, 7, 7 and inf. (only good and bad values are relevant)-->
+							<limit-entry value="4"/>
+							<limit-entry value="7"/>
+							<limit-entry value="7"/>
+							<positive-infinite/>
+						</limits>
+						<parameter-ref name="fasting-glucose"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+				<parameter-def name="postprandial-glucose-monitoring" type="glucose-monitoring-scale">
+					<qualitative-parameter-def>
+						<limits>
+							<context>
+								<one-of name="DMT2-treatment">
+									<value-ref name="antidiabetics"/>
+								</one-of>
+							</context>
+							<negative-infinite/>
+							<limit-entry value="9"/>
+							<limit-entry value="10"/>
+							<positive-infinite/>
+						</limits>
+						<!--Monitoring of insulin patients (see booklet)-->
+						<limits unit="mmoll">
+							<context>
+								<one-of name="DMT2-treatment">
+									<value-ref name="insulin-plus-antidiabetics"/>
+									<value-ref name="insulin"/>
+								</one-of>
+							</context>
+							<!--Limits are -inf., 10, 10 and inf. (only good and bad values are relevant)-->
+							<negative-infinite/>
+							<limit-entry value="10"/>
+							<limit-entry value="10"/>
+							<positive-infinite/>
+						</limits>
+						<!--Temporary solution (computed from average)-->
+						<parameter-ref name="average-postprandial-glucose"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+				<parameter-def name="glucose-monitoring" type="glucose-monitoring-scale">
+					<logical-dependency-def>
+						<!--one of the previous monitorings-->
+						<parameter-proposition parameter-name="fasting-glucose-monitoring">
+							<is-known-parameter/>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+						<parameter-ref name="fasting-glucose-monitoring"/>
+						<parameter-proposition parameter-name="postprandial-glucose-monitoring">
+							<is-known-parameter/>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+						<parameter-ref name="postprandial-glucose-monitoring"/>
+					</logical-dependency-def>
+				</parameter-def>
+				<!-- CH disease risk-->
+				<parameter-def name="age-in-tens" type="age-scale">
+					<qualitative-parameter-def use-as-context="yes">
+						<limits unit="y">
+							<context>
+								<any/>
+							</context>
+							<limit-entry value="0"/>
+							<limit-entry value="40"/>
+							<limit-entry value="50"/>
+							<limit-entry value="60"/>
+							<limit-entry value="70"/>
+							<positive-infinite/>
+						</limits>
+						<parameter-ref name="age"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+				<parameter-def name="CH-disease-risk" type="risk-scale">
+					<qualitative-parameter-def>
+						<limits>
+							<context>
+								<context-combination operator="or">
+									<one-of name="age-in-tens">
+										<value-ref name="40ies"/>
+									</one-of>
+									<context-combination operator="and">
+										<one-of name="age-in-tens">
+											<value-ref name="50ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="50ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+								</context-combination>
+							</context>
+							<negative-infinite/>
+							<positive-infinite/>
+							<positive-infinite/>
+						</limits>
+						<limits>
+							<context>
+								<context-combination operator="or">
+									<context-combination operator="and">
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="50ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+								</context-combination>
+							</context>
+							<limit-entry value="0"/>
+							<limit-entry value="7"/>
+							<positive-infinite/>
+						</limits>
+						<limits>
+							<context>
+								<context-combination operator="or">
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+								</context-combination>
+							</context>
+							<limit-entry value="0"/>
+							<limit-entry value="5"/>
+							<positive-infinite/>
+						</limits>
+						<limits>
+							<context>
+								<context-combination operator="or">
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+									</context-combination>
+								</context-combination>
+							</context>
+							<negative-infinite/>
+							<negative-infinite/>
+							<positive-infinite/>
+						</limits>
+						<limits>
+							<context>
+								<context-combination operator="or">
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="female"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="true"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="60ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="true"/>
+										</one-of>
+									</context-combination>
+									<context-combination operator="and">
+										<one-of name="sex">
+											<value-ref name="male"/>
+										</one-of>
+										<one-of name="smoking">
+											<value-ref name="false"/>
+										</one-of>
+										<one-of name="age-in-tens">
+											<value-ref name="70ies"/>
+										</one-of>
+										<one-of name="hypertension">
+											<value-ref name="false"/>
+										</one-of>
+									</context-combination>
+								</context-combination>
+							</context>
+							<limit-entry value="0"/>
+							<limit-entry value="6"/>
+							<positive-infinite/>
+						</limits>
+						<parameter-ref name="total-cholesterol-HDL-ratio"/>
+					</qualitative-parameter-def>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for diagnosis and risk inventory">
+				<parameter-def name="thirst" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the patient thirsty?"/>
+				</parameter-def>
+				<parameter-def name="polyuria" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient polyuria?"/>
+				</parameter-def>
+				<parameter-def name="weight-loss" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient lost weight?"/>
+				</parameter-def>
+				<parameter-def name="pruritis-vulvae" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient pruritis vulvae?"/>
+				</parameter-def>
+				<parameter-def name="DMT2-in-1st-grade-relatives" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient 1st grade relatives with DMT2?"/>
+				</parameter-def>
+				<parameter-def name="hypertension" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient hypertension?"/>
+				</parameter-def>
+				<parameter-def name="CV-diseases" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient CV diseases?"/>
+				</parameter-def>
+				<parameter-def name="fat-metabolism-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient fat metabolism problems?"/>
+				</parameter-def>
+				<parameter-def name="quetelet-index" type="amount">
+					<raw-data-def mode="manual" user-text="What is the Quetelet index of the patient?"/>
+				</parameter-def>
+				<parameter-def name="ethnic-group" type="ethnic-group-scale">
+					<raw-data-def mode="manual" user-text="What is the ethnic group of the patient?"/>
+				</parameter-def>
+				<parameter-def name="DMT2-in-past" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient had DM in the past?"/>
+				</parameter-def>
+				<parameter-def name="newborns-biggerthan-4kg" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient had newborns bigger than 4kg?"/>
+				</parameter-def>
+				<parameter-def name="CH-diseases" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient CH diseases?"/>
+				</parameter-def>
+				<parameter-def name="CH-disease-in-youngerthan-64-1st-grade-relatives" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient 1st grade relatives younger than 65 with CH diseases?"/>
+				</parameter-def>
+				<parameter-def name="feeding-habits" type="feeding-habits-scale">
+					<raw-data-def mode="manual" user-text="How are the feeding habits of the patient?"/>
+				</parameter-def>
+				<parameter-def name="smoking" type="Boolean">
+					<raw-data-def mode="manual" user-text="Does the patient smoke?"/>
+				</parameter-def>
+				<parameter-def name="alcohol-consuming" type="Boolean">
+					<raw-data-def mode="manual" user-text="Does the patient consume alcohol?"/>
+				</parameter-def>
+				<parameter-def name="physical-exercise" type="Boolean">
+					<raw-data-def mode="manual" user-text="Does the patient do any physical exercise?"/>
+				</parameter-def>
+				<parameter-def name="higher-blood-pressure" type="pressure">
+					<raw-data-def mode="manual" unit="mmHg" user-text="What is the higher (systolic) blood pressure?"/>
+				</parameter-def>
+				<parameter-def name="lower-blood-pressure" type="pressure">
+					<raw-data-def mode="manual" unit="mmHg" user-text="What is the lower (diastolic) blood pressure"/>
+				</parameter-def>
+				<parameter-def name="albumin-in-urine" type="amount">
+					<raw-data-def mode="manual" user-text="What is the albumin value in 1st morning urine?"/>
+				</parameter-def>
+				<parameter-def name="albumin-creatinin-ratio-in-urine" type="amount">
+					<raw-data-def mode="manual" user-text="What is the albumin/creatinin ratio in 1st morning urine?"/>
+				</parameter-def>
+				<parameter-def name="GHb" type="amount">
+					<raw-data-def mode="manual" user-text="What is the gycohemoglobin value of the patient?"/>
+				</parameter-def>
+				<parameter-def name="total-cholesterol" type="amount">
+					<raw-data-def mode="manual" user-text="What is the total cholesterol value of the patient?"/>
+				</parameter-def>
+				<parameter-def name="HDL-cholesterol" type="amount">
+					<raw-data-def mode="manual" user-text="What is the HDL cholesterol value of the patient?"/>
+				</parameter-def>
+				<parameter-def name="triglycerids" type="amount">
+					<raw-data-def mode="manual" user-text="What is the triglycerid level of the patient?"/>
+				</parameter-def>
+				<parameter-def name="creatinin" type="amount">
+					<raw-data-def mode="manual" user-text="What is the creatinin value of the patient?"/>
+				</parameter-def>
+				<parameter-def name="total-cholesterol-HDL-ratio" type="amount">
+					<calculation-def operator="divide">
+						<parameter-ref name="total-cholesterol"/>
+						<parameter-ref name="HDL-cholesterol"/>
+					</calculation-def>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for treatment">
+				<parameter-def name="maximal-drug-doses" type="Boolean">
+					<raw-data-def mode="manual" user-text="Have the maximal doses of the drug been attained?"/>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for antidiabetic treatment">
+				<parameter-def name="drug-name" type="String">
+					<raw-data-def mode="manual" user-text="What is the drug you prescribe?"/>
+				</parameter-def>
+				<parameter-def name="drug-dose" type="amount">
+					<raw-data-def mode="manual" user-text="What is the drug dose you prescribe?"/>
+				</parameter-def>
+				<parameter-def name="drug-dose-increase" type="amount">
+					<raw-data-def mode="manual" user-text="What is the increase you prescribe for the drug dose?"/>
+				</parameter-def>
+				<parameter-def name="problematic-antidiabetic" type="String">
+					<raw-data-def mode="manual" user-text="What is the antidiabetic causing problems?"/>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for insulin treatment">
+				<parameter-def name="par-evening-insulin-dose" type="amount">
+					<raw-data-def mode="manual" user-text="What is the evening insulin dose you prescribe? (8..12)"/>
+				</parameter-def>
+				<parameter-def name="evening-adaptation" type="amount">
+					<raw-data-def mode="manual" user-text="What is the adaptation you prescribe for the evening insulin dose? (based on fasting glucose, 2..4)"/>
+				</parameter-def>
+				<parameter-def name="par-morning-insulin-dose" type="amount">
+					<raw-data-def mode="manual" user-text="What is the morning insulin dose you prescribe? (8..12)"/>
+				</parameter-def>
+				<parameter-def name="morning-adaptation" type="amount">
+					<raw-data-def mode="manual" user-text="What is the adaptation you prescribe for the morning insulin dose? (based on postprandial glucose)"/>
+				</parameter-def>
+				<parameter-def name="par-insulin-type" type="insulin-type-scale">
+					<raw-data-def mode="manual" user-text="What is the type of insulin you prescribe? (mid-term, mix)"/>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for treatment of related diseases">
+				<parameter-def name="concurrent-diseases-over" type="Boolean">
+					<raw-data-def mode="manual" user-text="Are the concurrent diseases over?"/>
+				</parameter-def>
+				<parameter-def name="hypoglycemis-coma-over" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the hypoglycemic coma over?"/>
+				</parameter-def>
+				<parameter-def name="consultation-over" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the consultation over?"/>
+				</parameter-def>
+				<parameter-def name="chiropodist-referral-over" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the chiropodist referral over?"/>
+				</parameter-def>
+				<parameter-def name="nurse-referral-over" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the nurse referral over?"/>
+				</parameter-def>
+			</parameter-group>
+			<parameter-group title="Parameters for periodical controls">
+				<parameter-def name="wellbeing" type="Boolean">
+					<raw-data-def mode="manual" user-text="Is the general state of the patient good?"/>
+				</parameter-def>
+				<parameter-def name="hypoglycemia" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient had any hypoglycemia episode?"/>
+				</parameter-def>
+				<parameter-def name="feeding-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient problems with prescribed feeding?"/>
+				</parameter-def>
+				<parameter-def name="treatment-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient problems with prescribed treatment?"/>
+				</parameter-def>
+				<parameter-def name="weight" type="mass">
+					<raw-data-def mode="manual" user-text="What is the weight of the patient?"/>
+				</parameter-def>
+				<parameter-def name="feet-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient problems with feet?"/>
+				</parameter-def>
+				<parameter-def name="visus-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient visus problems?"/>
+				</parameter-def>
+				<parameter-def name="CV-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient CV problems?"/>
+				</parameter-def>
+				<parameter-def name="visus-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient visus problems?"/>
+				</parameter-def>
+				<parameter-def name="neuropathy" type="Boolean">
+					<raw-data-def mode="manual" user-text="Does the patient suffer from neuropathy?"/>
+				</parameter-def>
+				<parameter-def name="sexual-problems" type="Boolean">
+					<raw-data-def mode="manual" user-text="Has the patient sexual problems?"/>
+				</parameter-def>
+			</parameter-group>
+			<!--Variables (they are set) for diagnosis-->
+			<variable-def name="typical-signs" type="Boolean"/>
+			<variable-def name="risk-factors" type="Boolean"/>
+			<variable-def name="glucose-determination-needed" type="Boolean"/>
+			<!--Variables (they are set) for treatment-->
+			<variable-def name="DMT2-treatment" type="String"/>
+			<variable-def name="cholesterol-treatment" type="Boolean"/>
+			<!--Cyclical time points (not used)-->
+			<cyclical-time-point-assignment name="years">
+				<set-of-cyclical-time-points>
+					<time-point>
+						<numerical-constant unit="d" value="0"/>
+					</time-point>
+					<offset>
+						<numerical-constant unit="d" value="0"/>
+					</offset>
+					<frequency>
+						<numerical-constant unit="mon" value="12"/>
+					</frequency>
+				</set-of-cyclical-time-points>
+			</cyclical-time-point-assignment>
+			<cyclical-time-point-assignment name="quarters">
+				<set-of-cyclical-time-points>
+					<time-point>
+						<numerical-constant unit="d" value="0"/>
+					</time-point>
+					<offset>
+						<numerical-constant unit="d" value="0"/>
+					</offset>
+					<frequency>
+						<numerical-constant unit="mon" value="3"/>
+					</frequency>
+				</set-of-cyclical-time-points>
+			</cyclical-time-point-assignment>
+			<cyclical-time-annotation-assignment name="yearly">
+				<cyclical-time-annotation>
+					<time-range>
+						<starting-shift>
+							<earliest>
+								<numerical-constant unit="w" value="-2"/>
+							</earliest>
+						</starting-shift>
+						<finishing-shift>
+							<latest>
+								<numerical-constant unit="w" value="2"/>
+							</latest>
+						</finishing-shift>
+					</time-range>
+					<cyclical-time-point-ref name="years"/>
+				</cyclical-time-annotation>
+			</cyclical-time-annotation-assignment>
+			<cyclical-time-annotation-assignment name="quarterly">
+				<cyclical-time-annotation>
+					<time-range>
+						<starting-shift>
+							<earliest>
+								<numerical-constant unit="w" value="-2"/>
+							</earliest>
+						</starting-shift>
+						<finishing-shift>
+							<latest>
+								<numerical-constant unit="w" value="2"/>
+							</latest>
+						</finishing-shift>
+					</time-range>
+					<cyclical-time-point-ref name="quarters"/>
+				</cyclical-time-annotation>
+			</cyclical-time-annotation-assignment>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="Diabetes-Mellitus-Type-2">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<simple-condition>
+							<comparison type="not-equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<plan-body>
+					<subplans type="sequentially" wait-for-optional-subplans="yes">
+						<wait-for>
+							<one/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Diagnostics"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Policy"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Diagnostics">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<parameter-proposition parameter-name="glucose-evaluation">
+							<is-known-parameter/>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+					</intention>
+				</intentions>
+				<plan-body>
+					<subplans type="sequentially" wait-for-optional-subplans="yes">
+						<wait-for>
+							<static-plan-pointer plan-name="Anamnesis"/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Anamnesis"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Glucose-determination"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Risk-inventory"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Anamnesis">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<simple-condition>
+							<is-known-variable name="glucose-determination-needed"/>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<subplans type="sequentially" wait-for-optional-subplans="yes">
+							<wait-for>
+								<static-plan-pointer plan-name="Anamnesis-typical-signs"/>
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Anamnesis-typical-signs"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Anamnesis-olderthan-45"/>
+							</plan-activation>
+						</subplans>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="typical-signs"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="risk-factors"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<variable-assignment variable="glucose-determination-needed">
+									<qualitative-constant value="true"/>
+								</variable-assignment>
+							</then-branch>
+							<else-branch>
+								<variable-assignment variable="glucose-determination-needed">
+									<qualitative-constant value="false"/>
+								</variable-assignment>
+							</else-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Anamnesis-typical-signs">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<simple-condition>
+							<is-known-variable name="typical-signs"/>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<subplans type="any-order">
+							<wait-for>
+								<all/>
+							</wait-for>
+							<ask>
+								<parameter-ref name="thirst"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="polyuria"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="weight-loss"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+						</subplans>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="and">
+									<!--To revieW!-->
+									<comparison type="greater-than">
+										<left-hand-side>
+											<variable-ref name="age"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant unit="y" value="60"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="sex"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="female"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<ask>
+									<parameter-ref name="pruritis-vulvae"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="thirst"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="polyuria"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="weight-loss"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<simple-condition-combination type="and">
+										<comparison type="greater-than">
+											<left-hand-side>
+												<variable-ref name="age"/>
+											</left-hand-side>
+											<right-hand-side>
+												<!--To revieW!-->
+												<numerical-constant unit="y" value="60"/>
+											</right-hand-side>
+										</comparison>
+										<comparison type="equal">
+											<left-hand-side>
+												<variable-ref name="sex"/>
+											</left-hand-side>
+											<right-hand-side>
+												<qualitative-constant value="female"/>
+											</right-hand-side>
+										</comparison>
+										<!--...I would have preferred is-known-parameter(pruritis-vulvae) here-->
+										<comparison type="equal">
+											<left-hand-side>
+												<parameter-ref name="pruritis-vulvae"/>
+											</left-hand-side>
+											<right-hand-side>
+												<qualitative-constant value="true"/>
+											</right-hand-side>
+										</comparison>
+									</simple-condition-combination>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<variable-assignment variable="typical-signs">
+									<qualitative-constant value="true"/>
+								</variable-assignment>
+							</then-branch>
+							<else-branch>
+								<variable-assignment variable="typical-signs">
+									<qualitative-constant value="false"/>
+								</variable-assignment>
+							</else-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Anamnesis-olderthan-45">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<simple-condition>
+							<is-known-variable name="risk-factors"/>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<constraint-combination type="and">
+							<simple-condition>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<variable-ref name="age"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant unit="y" value="45"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="triennial-visit"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+						</constraint-combination>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<subplans type="any-order">
+							<wait-for>
+								<all/>
+							</wait-for>
+							<ask>
+								<parameter-ref name="DMT2-in-1st-grade-relatives"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="hypertension"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="CV-diseases"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="fat-metabolism-problems"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="quetelet-index"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<ask>
+								<parameter-ref name="ethnic-group"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+						</subplans>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="sex"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="female"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<ask>
+									<parameter-ref name="DM-in-past"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+								<ask>
+									<parameter-ref name="newborns-biggerthan-4kg"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="DMT2-in-1st-grade-relatives"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="hypertension"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="CV-diseases"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="fat-metabolism-problems"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="greater-or-equal">
+										<!--To revieW!-->
+										<left-hand-side>
+											<parameter-ref name="quetelet-index"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant unit="amount" value="27"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="ethnic-group"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="hindustanian"/>
+										</right-hand-side>
+									</comparison>
+									<simple-condition-combination type="and">
+										<comparison type="equal">
+											<left-hand-side>
+												<variable-ref name="sex"/>
+											</left-hand-side>
+											<right-hand-side>
+												<qualitative-constant value="female"/>
+											</right-hand-side>
+										</comparison>
+										<!--...though I would prefer is-known-parameter(...) instead-->
+										<simple-condition-combination type="or">
+											<comparison type="equal">
+												<left-hand-side>
+													<parameter-ref name="DM-in-past"/>
+												</left-hand-side>
+												<right-hand-side>
+													<qualitative-constant value="true"/>
+												</right-hand-side>
+											</comparison>
+											<comparison type="equal">
+												<left-hand-side>
+													<parameter-ref name="newborns-biggerthan-4kg"/>
+												</left-hand-side>
+												<right-hand-side>
+													<qualitative-constant value="true"/>
+												</right-hand-side>
+											</comparison>
+										</simple-condition-combination>
+									</simple-condition-combination>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<variable-assignment variable="risk-factors">
+									<qualitative-constant value="true"/>
+								</variable-assignment>
+							</then-branch>
+							<else-branch>
+								<variable-assignment variable="risk-factors">
+									<qualitative-constant value="false"/>
+								</variable-assignment>
+							</else-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Glucose-determination">
+				<intentions>
+					<intention type="overall-state" verb="achieve">
+						<constraint-combination type="or">
+							<parameter-proposition parameter-name="fasting-glucose">
+								<is-known-parameter/>
+								<context>
+									<any/>
+								</context>
+								<time-annotation>
+									<now/>
+								</time-annotation>
+							</parameter-proposition>
+							<parameter-proposition parameter-name="postprandial-glucose">
+								<is-known-parameter/>
+								<context>
+									<any/>
+								</context>
+								<time-annotation>
+									<now/>
+								</time-annotation>
+							</parameter-proposition>
+						</constraint-combination>
+					</intention>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="glucose-determination-needed"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<subplans type="any-order">
+							<wait-for>
+								<one/>
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Fasting-glucose-test-manual"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Non-fasting-glucose-test-manual"/>
+							</plan-activation>
+						</subplans>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-evaluation"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="DMT2"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Fasting-glucose-test">
+										<time-annotation>
+											<time-range>
+												<starting-shift>
+													<earliest>
+														<numerical-constant scale="time" unit="d" value="2"/>
+													</earliest>
+													<latest>
+														<numerical-constant scale="time" unit="d" value="7"/>
+													</latest>
+												</starting-shift>
+											</time-range>
+											<references>
+												<plan-state-transition direction="leave" instance-type="first" state="completed">
+													<plan-pointer>
+														<static-plan-pointer plan-name="Fasting-glucose-test-manual"/>
+													</plan-pointer>
+												</plan-state-transition>
+												<plan-state-transition direction="leave" instance-type="first" state="completed">
+													<plan-pointer>
+														<static-plan-pointer plan-name="Non-fasting-glucose-test-manual"/>
+													</plan-pointer>
+												</plan-state-transition>
+											</references>
+										</time-annotation>
+									</plan-schema>
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Fasting-glucose-test-manual" title="Fasting glucose test">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="glucose-measurement-type"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="fasting-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Non-fasting-glucose-test-manual" title="Non-fasting glucose test">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="glucose-measurement-type"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="non-fasting-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Fasting-glucose-test" title="Fasting glucose test">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="glucose-measurement-type"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="fasting-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Risk-inventory">
+				<conditions>
+					<filter-precondition>
+						<constraint-combination type="and">
+							<parameter-proposition parameter-name="glucose-evaluation">
+								<is-known-parameter/>
+								<context>
+									<any/>
+								</context>
+								<time-annotation>
+									<now/>
+								</time-annotation>
+							</parameter-proposition>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="glucose-evaluation"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="DMT2"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+						</constraint-combination>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="CH-diseases"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="CH-disease-in-youngerthan-60-1st-grade-relatives"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="feeding-habits"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="smoking"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="alcohol-consuming"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="physical-exercise"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="quetelet-index"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="higher-blood-pressure"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="lower-blood-pressure"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="less-than">
+									<left-hand-side>
+										<variable-ref name="age"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant unit="y" value="50"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Albumin-test"/>
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<ask>
+							<parameter-ref name="GHb"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="creatinin"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<plan-activation>
+							<plan-schema name="Cholesterol-tests"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Feet-examination"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Retinopathy-investigation">
+								<!--Within 6 months. -->
+								<time-annotation>
+									<time-range>
+										<finishing-shift>
+											<latest>
+												<numerical-constant scale="time" unit="mon" value="6"/>
+											</latest>
+										</finishing-shift>
+									</time-range>
+									<self/>
+								</time-annotation>
+							</plan-schema>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Albumin-test" title="Albumin test">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<one/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Albumin-test-manual"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Albumin-creatinin-ratio-test-manual"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Albumin-test-manual" title="Albumin test">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<ask>
+						<parameter-ref name="albumin-in-urine"/>
+						<time-out>
+							<now/>
+						</time-out>
+					</ask>
+				</plan-body>
+			</plan>
+			<plan name="Albumin-creatinin-ratio-test-manual" title="Albumin-creatinin ratio test">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<ask>
+						<parameter-ref name="albumin-creatinin-ratio-in-urine"/>
+						<time-out>
+							<now/>
+						</time-out>
+					</ask>
+				</plan-body>
+			</plan>
+			<plan name="Cholesterol-tests" title="Cholesterol tests">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="total-cholesterol"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="HDL-cholesterol"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="triglycerids"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Feet-examination" title="Perform a feet examination">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Retinopathy-investigation" title="Perform a retinopathy investigation">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Policy">
+				<intentions>
+					<intention label="avoid-bad-glucose-values" type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="glucose-evaluation"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="DMT2"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Education-DMT2"/>
+						</plan-activation>
+						<subplans retry-aborted-subplans="yes" type="unordered">
+							<wait-for>
+								<static-plan-pointer plan-name="Treatments-and-Controls"/>
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Treatments-and-Controls"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Policy-for-concurrent-diseases"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Policy-for-hypoglycemic-coma"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Policy-for-consultation"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Policy-for-chiropodist-referral"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Policy-for-nurse-referral"/>
+							</plan-activation>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Education-DMT2" title="Give information about the most important aspects of DM">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Treatments-and-Controls">
+				<intentions>
+					<intention label="maintain-acceptable-glucose-values" type="intermediate-state" verb="maintain">
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="good"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="acceptable"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</intention>
+					<intention type="intermediate-action" verb="maintain">
+						<plan-state-constraint state="activated">
+							<plan-pointer>
+								<static-plan-pointer plan-name="Quarterly-control"/>
+							</plan-pointer>
+							<time-annotation>
+								<time-annotation-ref name="quarterly"/>
+							</time-annotation>
+						</plan-state-constraint>
+					</intention>
+					<intention type="intermediate-action" verb="maintain">
+						<plan-state-constraint state="activated">
+							<plan-pointer>
+								<static-plan-pointer plan-name="Annual-control"/>
+							</plan-pointer>
+							<time-annotation>
+								<time-annotation-ref name="yearly"/>
+							</time-annotation>
+						</plan-state-constraint>
+					</intention>
+					<intention label="avoid-non-desired-situations" type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="hypoglycemic-coma"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="complications"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="alive"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="false"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="parallel">
+						<wait-for>
+							<none/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Non-insulin-DMT2-treatments"/>
+							<on-abort>
+								<plan-activation>
+									<plan-schema name="Insulin-DMT2-treatments"/>
+								</plan-activation>
+							</on-abort>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Treatment-of-CV-disease-risk-factors"/>
+						</plan-activation>
+						<cyclical-plan>
+							<cyclical-plan-body>
+								<plan-activation>
+									<plan-schema name="Quarterly-control"/>
+								</plan-activation>
+							</cyclical-plan-body>
+							<repeat-specification>
+								<retry-delay>
+									<minimum>
+										<numerical-constant scale="time" unit="w" value="10"/>
+									</minimum>
+									<maximum>
+										<numerical-constant scale="time" unit="w" value="14"/>
+									</maximum>
+								</retry-delay>
+							</repeat-specification>
+						</cyclical-plan>
+						<cyclical-plan>
+							<cyclical-plan-body>
+								<plan-activation>
+									<plan-schema name="Annual-control"/>
+								</plan-activation>
+							</cyclical-plan-body>
+							<repeat-specification>
+								<retry-delay>
+									<minimum>
+										<numerical-constant scale="time" unit="w" value="46"/>
+									</minimum>
+									<maximum>
+										<numerical-constant scale="time" unit="w" value="50"/>
+									</maximum>
+								</retry-delay>
+							</repeat-specification>
+						</cyclical-plan>
+					</subplans>
+				</plan-body>
+			</plan>
+			<!--DMT2 treatments-->
+			<!--Non-insulin treatments-->
+			<plan name="Non-insulin-DMT2-treatments">
+				<intentions>
+					<intention label="achieve-acceptable-glucose-values" type="overall-state" verb="achieve">
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="good"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="acceptable"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</intention>
+					<intention label="avoid-insulin-treatment" type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="DMT2-treatment"/>
+									</left-hand-side>
+									<right-hand-side>
+										<string-constant value="insulin-plus-antidiabetics"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="DMT2-treatment"/>
+									</left-hand-side>
+									<right-hand-side>
+										<string-constant value="insulin"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</intention>
+				</intentions>
+				<conditions>
+					<abort-condition>
+						<constraint-combination type="and">
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="bad"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<plan-state-constraint state="completed">
+								<plan-pointer>
+									<static-plan-pointer plan-name="SU-derivative-plus-metformin-treatment"/>
+								</plan-pointer>
+								<time-annotation>
+									<now/>
+								</time-annotation>
+							</plan-state-constraint>
+						</constraint-combination>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially" wait-for-optional-subplans="yes">
+						<wait-for>
+							<static-plan-pointer plan-name="Diet-specialist-referral"/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Diet-specialist-referral"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Fasting-glucose-test">
+								<!--'after 3 months', understood in a flexible manner-->
+								<time-annotation>
+									<time-range>
+										<starting-shift>
+											<earliest>
+												<numerical-constant scale="time" unit="w" value="11"/>
+											</earliest>
+											<latest>
+												<numerical-constant scale="time" unit="w" value="13"/>
+											</latest>
+										</starting-shift>
+									</time-range>
+									<plan-state-transition direction="leave" instance-type="first" state="activated">
+										<plan-pointer>
+											<static-plan-pointer plan-name="Diet-specialist-referral"/>
+										</plan-pointer>
+									</plan-state-transition>
+								</time-annotation>
+							</plan-schema>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="SU-derivative-or-metformin-treatment"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="SU-derivative-plus-metformin-treatment"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Diet-specialist-referral" title="Diet specialist referral">
+				<intentions>
+					<intention type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="DMT2-treatment"/>
+								</left-hand-side>
+								<right-hand-side>
+									<string-constant value="antidiabetics"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</intention>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+				</intentions>
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="SU-derivative-or-metformin-treatment">
+				<value-defs>
+					<variable-def name="antidiabetics" scalar-or-not="list" type="String"/>
+					<variable-def name="antidiabetic-doses" scalar-or-not="list" type="amount"/>
+					<iterator-def name="iterator-antidiabetics" start-at="first-element">
+						<variable-ref name="antidiabetics"/>
+					</iterator-def>
+					<iterator-def name="iterator-antidiabetic-doses" start-at="first-element">
+						<variable-ref name="antidiabetic-doses"/>
+					</iterator-def>
+				</value-defs>
+				<intentions>
+					<intention type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="gastrointestinal-side-effects"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<simple-condition-combination type="and">
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="hypoglycemia"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="weight-gain"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+							</simple-condition-combination>
+						</simple-condition>
+					</intention>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<variable-assignment variable="DMT2-treatment">
+							<string-constant value="antidiabetics"/>
+						</variable-assignment>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="less-or-equal">
+									<left-hand-side>
+										<parameter-ref name="quetelet-index"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant scale="amount" value="27"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<ask>
+									<parameter-ref name="drug-name"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+								<put-last list="antidiabetics">
+									<element>
+										<parameter-ref name="drug-name"/>
+									</element>
+								</put-last>
+							</then-branch>
+							<else-branch>
+								<put-last list="antidiabetics">
+									<element>
+										<string-constant value="metformin"/>
+									</element>
+								</put-last>
+							</else-branch>
+						</if-then-else>
+						<plan-activation>
+							<plan-schema name="Initialise-drug-doses">
+								<argument-value name="drugs">
+									<variable-ref name="antidiabetics"/>
+								</argument-value>
+								<argument-value name="iterator-drugs">
+									<variable-ref name="iterator-antidiabetics"/>
+								</argument-value>
+								<argument-value name="drug-doses">
+									<variable-ref name="antidiabetic-doses"/>
+								</argument-value>
+								<argument-value name="iterator-drug-doses">
+									<variable-ref name="iterator-antidiabetic-doses"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-drug-doses" variable-name="antidiabetic-doses"/>
+							</plan-schema>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Find-antidiabetic-doses">
+								<argument-value name="drugs">
+									<variable-ref name="antidiabetics"/>
+								</argument-value>
+								<argument-value name="iterator-drugs">
+									<variable-ref name="iterator-antidiabetics"/>
+								</argument-value>
+								<argument-value name="drug-doses">
+									<variable-ref name="antidiabetic-doses"/>
+								</argument-value>
+								<argument-value name="iterator-drug-doses">
+									<variable-ref name="iterator-antidiabetic-doses"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-drug-doses" variable-name="antidiabetic-doses"/>
+							</plan-schema>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Initialise-drug-doses">
+				<arguments>
+					<argument name="drugs" scalar-or-not="list" type="String"/>
+					<argument name="iterator-drugs" type="iterator"/>
+					<argument name="drug-doses" scalar-or-not="list" type="amount"/>
+					<argument name="iterator-drug-doses" type="iterator"/>
+				</arguments>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<reset-iterator iterator="iterator-drugs"/>
+						<reset-iterator iterator="iterator-drug-doses"/>
+						<go-to-next iterator="iterator-drug-doses"/>
+						<iterative-plan>
+							<do-repeatedly>
+								<!--A Display would be needed HERE!!!-->
+								<ask>
+									<parameter-ref name="drug-dose"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+								<insert-before-iterator iterator="iterator-drug-doses">
+									<element>
+										<parameter-ref name="drug-dose"/>
+									</element>
+								</insert-before-iterator>
+								<go-to-next iterator="iterator-drugs"/>
+								<go-to-next iterator="iterator-drug-doses"/>
+							</do-repeatedly>
+							<termination-condition>
+								<is-at-end iterator="iterator-drugs"/>
+							</termination-condition>
+						</iterative-plan>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-drug-doses">
+						<variable-ref name="drug-doses"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Find-antidiabetic-doses">
+				<arguments>
+					<argument name="drugs" scalar-or-not="list" type="String"/>
+					<argument name="iterator-drugs" type="iterator"/>
+					<argument name="drug-doses" scalar-or-not="list" type="amount"/>
+					<argument name="iterator-drug-doses" type="iterator"/>
+					<argument name="antidiabetic-maximal-doses" type="Boolean"/>
+				</arguments>
+				<conditions>
+					<suspend-condition>
+						<constraint-combination type="and">
+							<refer-to label="antidiabetic-problems" plan-name="Check-for-antidiabetic-problems"/>
+							<plan-state-constraint state="activated">
+								<plan-pointer>
+									<static-plan-pointer plan-name="Check-for-antidiabetic-problems"/>
+								</plan-pointer>
+								<time-annotation>
+									<now/>
+								</time-annotation>
+							</plan-state-constraint>
+						</constraint-combination>
+					</suspend-condition>
+					<reactivate-condition>
+						<plan-state-constraint state="completed">
+							<plan-pointer>
+								<static-plan-pointer plan-name="Check-for-antidiabetic-problems"/>
+							</plan-pointer>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</plan-state-constraint>
+					</reactivate-condition>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="not-equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<abort-condition>
+						<simple-condition>
+							<simple-condition-combination type="and">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="antidiabetic-maximal-doses"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="bad"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<cyclical-plan>
+						<cyclical-plan-body>
+							<plan-activation>
+								<plan-schema name="Increase-drug-doses">
+									<argument-value name="drugs">
+										<variable-ref name="drugs"/>
+									</argument-value>
+									<argument-value name="iterator-drugs">
+										<variable-ref name="iterator-drugs"/>
+									</argument-value>
+									<argument-value name="drug-doses">
+										<variable-ref name="drug-doses"/>
+									</argument-value>
+									<argument-value name="iterator-drug-doses">
+										<variable-ref name="iterator-drug-doses"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-drug-doses" variable-name="drug-doses"/>
+									<return-value-assignment return-value-name="out-maximal-drug-doses" variable-name="antidiabetic-maximal-doses"/>
+								</plan-schema>
+							</plan-activation>
+						</cyclical-plan-body>
+						<repeat-specification>
+							<retry-delay>
+								<minimum>
+									<numerical-constant scale="time" unit="w" value="2"/>
+								</minimum>
+								<maximum>
+									<numerical-constant scale="time" unit="w" value="4"/>
+								</maximum>
+							</retry-delay>
+						</repeat-specification>
+					</cyclical-plan>
+				</plan-body>
+				<returns>
+					<return-value name="out-drug-doses">
+						<variable-ref name="drug-doses"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Increase-drug-doses">
+				<arguments>
+					<argument name="drugs" scalar-or-not="list" type="String"/>
+					<argument name="iterator-drugs" type="iterator"/>
+					<argument name="drug-doses" scalar-or-not="list" type="amount"/>
+					<argument name="iterator-drug-doses" type="iterator"/>
+				</arguments>
+				<value-defs>
+					<variable-def name="aux-doses" scalar-or-not="list" type="amount"/>
+				</value-defs>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="maximal-drug-doses"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<reset-iterator iterator="iterator-drugs"/>
+						<reset-iterator iterator="iterator-drug-doses"/>
+						<iterative-plan>
+							<do-repeatedly>
+								<!--A Display would be needed HERE!!! (to display the name of the drug being increased)-->
+								<ask>
+									<parameter-ref name="drug-dose-increase"/>
+									<time-out>
+										<now/>
+									</time-out>
+								</ask>
+								<put-last list="aux-doses">
+									<element>
+										<operation operator="add">
+											<parameter-ref name="drug-dose-increase"/>
+											<get iterator="iterator-drug-doses"/>
+										</operation>
+									</element>
+								</put-last>
+								<go-to-next iterator="iterator-drugs"/>
+								<go-to-next iterator="iterator-drug-doses"/>
+							</do-repeatedly>
+							<termination-condition>
+								<is-at-end iterator="iterator-drugs"/>
+							</termination-condition>
+						</iterative-plan>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-drug-doses">
+						<variable-ref name="aux-doses"/>
+					</return-value>
+					<return-value name="out-maximal-drug-doses">
+						<parameter-ref name="maximal-drug-doses"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="SU-derivative-plus-metformin-treatment">
+				<value-defs>
+					<variable-def name="antidiabetics" scalar-or-not="list" type="String"/>
+					<variable-def name="antidiabetic-doses" scalar-or-not="list" type="amount"/>
+					<iterator-def name="iterator-antidiabetics" start-at="first-element">
+						<variable-ref name="antidiabetics"/>
+					</iterator-def>
+					<iterator-def name="iterator-antidiabetic-doses" start-at="first-element">
+						<variable-ref name="antidiabetic-doses"/>
+					</iterator-def>
+				</value-defs>
+				<intentions>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+					<refer-to label="avoid-insulin-treatment" plan-name="Non-insulin-DMT2-treatments"/>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="drug-name"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<put-last list="antidiabetics">
+							<element>
+								<parameter-ref name="drug-name"/>
+							</element>
+						</put-last>
+						<put-last list="antidiabetics">
+							<element>
+								<string-constant value="metformin"/>
+							</element>
+						</put-last>
+						<plan-activation>
+							<plan-schema name="Initialise-drug-doses">
+								<argument-value name="drugs">
+									<variable-ref name="antidiabetics"/>
+								</argument-value>
+								<argument-value name="iterator-drugs">
+									<variable-ref name="iterator-antidiabetics"/>
+								</argument-value>
+								<argument-value name="drug-doses">
+									<variable-ref name="antidiabetic-doses"/>
+								</argument-value>
+								<argument-value name="iterator-drug-doses">
+									<variable-ref name="iterator-antidiabetic-doses"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-drug-doses" variable-name="antidiabetic-doses"/>
+							</plan-schema>
+						</plan-activation>
+						<subplans type="unordered">
+							<wait-for>
+								<static-plan-pointer plan-name="Find-antidiabetic-doses"/>
+							</wait-for>
+							<!--The periodicity of drug increases is the same-->
+							<plan-activation>
+								<plan-schema name="Find-antidiabetic-doses">
+									<argument-value name="drugs">
+										<variable-ref name="antidiabetics"/>
+									</argument-value>
+									<argument-value name="iterator-drugs">
+										<variable-ref name="iterator-antidiabetics"/>
+									</argument-value>
+									<argument-value name="drug-doses">
+										<variable-ref name="antidiabetic-doses"/>
+									</argument-value>
+									<argument-value name="iterator-drug-doses">
+										<variable-ref name="iterator-antidiabetic-doses"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-drug-doses" variable-name="antidiabetic-doses"/>
+								</plan-schema>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Check-for-antidiabetic-problems">
+									<argument-value name="drugs">
+										<variable-ref name="antidiabetics"/>
+									</argument-value>
+									<argument-value name="iterator-drugs">
+										<variable-ref name="iterator-antidiabetics"/>
+									</argument-value>
+									<argument-value name="drug-doses">
+										<variable-ref name="antidiabetic-doses"/>
+									</argument-value>
+									<argument-value name="iterator-drug-doses">
+										<variable-ref name="iterator-antidiabetic-doses"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-drugs" variable-name="antidiabetics"/>
+									<return-value-assignment return-value-name="out-drug-doses" variable-name="antidiabetic-doses"/>
+								</plan-schema>
+							</plan-activation>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Check-for-antidiabetic-problems">
+				<arguments>
+					<argument name="drugs" scalar-or-not="list" type="String"/>
+					<argument name="iterator-drugs" type="iterator"/>
+					<argument name="drug-doses" scalar-or-not="list" type="amount"/>
+					<argument name="iterator-drug-doses" type="iterator"/>
+				</arguments>
+				<conditions>
+					<filter-precondition>
+						<simple-condition label="antidiabetic-problems">
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="contraindications"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="side-effects"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="problematic-antidiabetic"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<reset-iterator iterator="iterator-drugs"/>
+						<reset-iterator iterator="iterator-drug-doses"/>
+						<iterative-plan>
+							<do-repeatedly>
+								<go-to-next iterator="iterator-drugs"/>
+								<go-to-next iterator="iterator-drug-doses"/>
+							</do-repeatedly>
+							<termination-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<get iterator="iterator-drugs"/>
+										</left-hand-side>
+										<right-hand-side>
+											<parameter-ref name="problematic-antidiabetic"/>
+										</right-hand-side>
+									</comparison>
+									<is-at-end iterator="iterator-drugs"/>
+								</simple-condition-combination>
+							</termination-condition>
+						</iterative-plan>
+						<remove-at-iterator iterator="iterator-drugs"/>
+						<remove-at-iterator iterator="iterator-drug-doses"/>
+						<put-last list="drugs">
+							<element>
+								<string-constant value="acarbose"/>
+							</element>
+						</put-last>
+						<!--A Display would be needed HERE!!! (to display that the problematic drug is being replaced with acarbose)-->
+						<ask>
+							<parameter-ref name="drug-dose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<put-last list="drug-doses">
+							<element>
+								<parameter-ref name="drug-dose"/>
+							</element>
+						</put-last>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-drugs">
+						<variable-ref name="drugs"/>
+					</return-value>
+					<return-value name="out-drug-doses">
+						<variable-ref name="drug-doses"/>
+					</return-value>
+				</returns>
+			</plan>
+			<!--Insulin treatments-->
+			<plan name="Insulin-DMT2-treatments">
+				<intentions>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+					<refer-to label="avoid-non-desired-situations" plan-name="Treatments-and-Controls"/>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Education-insulin"/>
+						</plan-activation>
+						<subplans type="any-order">
+							<wait-for>
+								<one/>
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Insulin-with-or-without-antidiabetics-treatment"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Only-insulin-treatment"/>
+							</plan-activation>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Education-insulin" title="Give information about insulin self-control">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Insulin-with-or-without-antidiabetics-treatment">
+				<value-defs>
+					<variable-def name="insulin-dd" type="amount"/>
+					<variable-def name="insulin-type" type="insulin-type-scale"/>
+					<variable-def name="evening-insulin-dose" type="amount"/>
+					<variable-def name="evening-insulin-intake" type="insulin-intake-scale"/>
+					<variable-def name="morning-insulin-dose" type="amount"/>
+					<variable-def name="morning-insulin-intake" type="insulin-intake-scale"/>
+				</value-defs>
+				<intentions>
+					<intention type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<comparison type="greater-than">
+								<left-hand-side>
+									<variable-ref name="insulin-dd"/>
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="1"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</intention>
+					<intention label="avoid-hypoglycemic-coma" type="intermediate-state" verb="avoid">
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="hypoglycemic-coma"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</intention>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+				</intentions>
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially" wait-for-optional-subplans="yes">
+						<wait-for>
+							<static-plan-pointer plan-name="Four-points-day-curve"/>
+						</wait-for>
+						<variable-assignment variable="DMT2-treatment">
+							<string-constant value="insulin-plus-antidiabetics"/>
+						</variable-assignment>
+						<!--Previous oral drugs are kept.-->
+						<plan-activation>
+							<plan-schema name="Four-points-day-curve"/>
+						</plan-activation>
+						<variable-assignment variable="insulin-type">
+							<qualitative-constant value="mid-term"/>
+						</variable-assignment>
+						<variable-assignment variable="insulin-dd">
+							<numerical-constant value="1"/>
+						</variable-assignment>
+						<ask>
+							<parameter-ref name="par-evening-insulin-dose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<variable-assignment variable="evening-insulin-dose">
+							<parameter-ref name="par-evening-insulin-dose"/>
+						</variable-assignment>
+						<variable-assignment variable="evening-insulin-intake">
+							<qualitative-constant value="after-meal"/>
+						</variable-assignment>
+						<!--Check after 2-3 days (this is done in Find-evening-insulin-dose).-->
+						<plan-activation>
+							<plan-schema name="Find-evening-insulin-dose">
+								<argument-value name="evening-dose">
+									<variable-ref name="evening-dose"/>
+								</argument-value>
+								<time-annotation>
+									<time-range>
+										<starting-shift>
+											<earliest>
+												<numerical-constant scale="time" unit="d" value="2"/>
+											</earliest>
+											<latest>
+												<numerical-constant scale="time" unit="d" value="3"/>
+											</latest>
+										</starting-shift>
+									</time-range>
+									<self/>
+								</time-annotation>
+								<return-value-assignment return-value-name="out-evening-dose" variable-name="evening-dose"/>
+							</plan-schema>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Change-to-only-insulin-treatment">
+								<argument-value name="evening-dose">
+									<variable-ref name="evening-insulin-dose"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-dd" variable-name="insulin-dd"/>
+								<return-value-assignment return-value-name="out-evening-intake" variable-name="evening-insulin-intake"/>
+								<return-value-assignment return-value-name="out-morning-dose" variable-name="morning-insulin-dose"/>
+								<return-value-assignment return-value-name="out-morning-intake" variable-name="morning-insulin-intake"/>
+							</plan-schema>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Four-points-day-curve">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="fasting-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="after-breakfast-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="after-lunch-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="after-dinner-glucose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Find-evening-insulin-dose">
+				<arguments>
+					<argument name="evening-dose" type="amount"/>
+				</arguments>
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="fasting-glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="good"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="greater-or-equal">
+								<left-hand-side>
+									<parameter-ref name="evening-dose"/>
+								</left-hand-side>
+								<right-hand-side>
+									<numerical-constant value="40"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<cyclical-plan>
+						<cyclical-plan-body>
+							<plan-activation>
+								<plan-schema name="Test-glucose-and-adapt-evening-insulin">
+									<argument-value name="evening-dose">
+										<variable-ref name="evening-dose"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-evening-dose" variable-name="evening-dose"/>
+								</plan-schema>
+							</plan-activation>
+						</cyclical-plan-body>
+						<!--Adapt once a week (flexibly).-->
+						<repeat-specification>
+							<retry-delay>
+								<minimum>
+									<numerical-constant scale="time" unit="d" value="7"/>
+								</minimum>
+								<maximum>
+									<numerical-constant scale="time" unit="d" value="10"/>
+								</maximum>
+							</retry-delay>
+						</repeat-specification>
+					</cyclical-plan>
+				</plan-body>
+				<returns>
+					<return-value name="out-evening-dose">
+						<variable-ref name="evening-dose"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Test-glucose-and-adapt-evening-insulin">
+				<arguments>
+					<argument name="evening-dose" type="amount"/>
+				</arguments>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Four-points-day-curve"/>
+						</plan-activation>
+						<!--A Display would be needed HERE!!! (to display both the glucose values and the currend dose)-->
+						<ask>
+							<parameter-ref name="evening-adaptation"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-evening-dose">
+						<operation operator="add">
+							<variable-ref name="evening-dose"/>
+							<parameter-ref name="evening-adaptation"/>
+						</operation>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Change-to-only-insulin-treatment">
+				<arguments>
+					<argument name="evening-dose" type="amount"/>
+				</arguments>
+				<value-defs>
+					<variable-def name="dd" type="amount"/>
+					<variable-def name="evening-intake" type="insulin-intake-scale"/>
+					<variable-def name="morning-dose" type="amount"/>
+					<variable-def name="morning-intake" type="insulin-intake-scale"/>
+				</value-defs>
+				<intentions>
+					<intention type="intermediate-state" verb="avoid">
+						<refer-to label="antidiabetic-problems" plan-name="Check-for-antidiabetic-problems"/>
+					</intention>
+					<intention type="intermediate-action" verb="avoid">
+						<plan-state-constraint state="activated">
+							<plan-pointer>
+								<static-plan-pointer plan-name="Diabetes-specialist-referral"/>
+							</plan-pointer>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</plan-state-constraint>
+					</intention>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+					<refer-to label="avoid-hypoglycemic-coma" plan-name="Insulin-with-or-without-antidiabetics-treatment"/>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<simple-condition-combination type="and">
+									<comparison type="greater-than">
+										<left-hand-side>
+											<variable-ref name="evening-dose"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant value="40"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="not-equal">
+										<left-hand-side>
+											<parameter-ref name="fasting-glucose-monitoring"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="bad"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+								<!--To revieW! ('considerable postprandial hyperglycemia')-->
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="postprandial-glucose-monitoring"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="bad"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially" wait-for-optional-subplans="yes">
+						<wait-for>
+							<static-plan-pointer plan-name="Find-morning-insulin-dose"/>
+						</wait-for>
+						<variable-assignment variable="DMT2-treatment">
+							<string-constant value="insulin"/>
+						</variable-assignment>
+						<!--To completE!!! (remove info about previous oral drugs)-->
+						<variable-assignment variable="dd">
+							<numerical-constant value="2"/>
+						</variable-assignment>
+						<variable-assignment variable="evening-intake">
+							<qualitative-constant value="before-meal"/>
+						</variable-assignment>
+						<ask>
+							<parameter-ref name="par-morning-insulin-dose"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<variable-assignment variable="morning-dose">
+							<parameter-ref name="par-morning-insulin-dose"/>
+						</variable-assignment>
+						<variable-assignment variable="morning-intake">
+							<qualitative-constant value="before-meal"/>
+						</variable-assignment>
+						<!--The evening dose remains the same.-->
+						<plan-activation>
+							<plan-schema name="Find-morning-insulin-dose">
+								<argument-value name="morning-dose">
+									<variable-ref name="morning-dose"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-morning-dose" variable-name="morning-dose"/>
+							</plan-schema>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Diabetes-specialist-referral"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-dd">
+						<variable-ref name="dd"/>
+					</return-value>
+					<return-value name="out-evening-intake">
+						<variable-ref name="evening-intake"/>
+					</return-value>
+					<return-value name="out-morning-dose">
+						<variable-ref name="morning-dose"/>
+					</return-value>
+					<return-value name="out-morning-intake">
+						<variable-ref name="morning-intake"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Find-morning-insulin-dose">
+				<arguments>
+					<argument name="morning-dose" type="amount"/>
+				</arguments>
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="postprandial-glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="good"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<cyclical-plan>
+						<cyclical-plan-body>
+							<plan-activation>
+								<plan-schema name="Test-glucose-and-adapt-morning-insulin">
+									<argument-value name="morning-dose">
+										<variable-ref name="morning-dose"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-morning-dose" variable-name="morning-dose"/>
+								</plan-schema>
+							</plan-activation>
+						</cyclical-plan-body>
+						<repeat-specification>
+							<!--Expert suggests to adapt once a week (flexibly).-->
+							<retry-delay>
+								<minimum>
+									<numerical-constant scale="time" unit="d" value="7"/>
+								</minimum>
+								<maximum>
+									<numerical-constant scale="time" unit="d" value="10"/>
+								</maximum>
+							</retry-delay>
+						</repeat-specification>
+					</cyclical-plan>
+				</plan-body>
+				<returns>
+					<return-value name="out-morning-dose">
+						<variable-ref name="morning-dose"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Test-glucose-and-adapt-morning-insulin">
+				<arguments>
+					<argument name="morning-dose" type="amount"/>
+				</arguments>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Four-points-day-curve"/>
+						</plan-activation>
+						<!--A Display would be needed HERE!!! (to display both the glucose values and the currend dose)-->
+						<ask>
+							<parameter-ref name="morning-adaptation"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-morning-dose">
+						<operation operator="add">
+							<variable-ref name="morning-dose"/>
+							<parameter-ref name="morning-adaptation"/>
+						</operation>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Diabetes-specialist-referral" title="Diabetes specialist referral for change of insulin regime">
+				<intentions>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+					<refer-to label="avoid-hypoglycemic-coma" plan-name="Insulin-with-or-without-antidiabetics-treatment"/>
+				</intentions>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<!--To revieW! ('insufficient correction of postprandial values')-->
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="postprandial-glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<!--To revieW! (doses should have to be modified accordingly)-->
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Only-insulin-treatment">
+				<value-defs>
+					<variable-def name="insulin-dd" type="amount"/>
+					<variable-def name="insulin-type" type="insulin-type-scale"/>
+					<variable-def name="evening-insulin-dose" type="amount"/>
+					<variable-def name="evening-insulin-intake" type="insulin-intake-scale"/>
+					<variable-def name="morning-insulin-dose" type="amount"/>
+					<variable-def name="morning-insulin-intake" type="insulin-intake-scale"/>
+				</value-defs>
+				<intentions>
+					<intention type="intermediate-state" verb="avoid">
+						<refer-to label="antidiabetic-problems" plan-name="Check-for-antidiabetic-problems"/>
+					</intention>
+					<refer-to label="achieve-acceptable-glucose-values" plan-name="Non-insulin-DMT2-treatments"/>
+					<refer-to label="avoid-hypoglycemic-coma" plan-name="Insulin-with-or-without-antidiabetics-treatment"/>
+				</intentions>
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<variable-assignment variable="DMT2-treatment">
+							<string-constant value="insulin"/>
+						</variable-assignment>
+						<!--To completE!!! (remove info about the previous oral drugs)-->
+						<ask>
+							<parameter-ref name="par-insulin-type"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<variable-assignment variable="insulin-type">
+							<parameter-ref name="par-insulin-type"/>
+						</variable-assignment>
+						<variable-assignment variable="insulin-dd">
+							<numerical-constant value="2"/>
+						</variable-assignment>
+						<variable-assignment variable="morning-insulin-dose">
+							<numerical-constant value="12"/>
+						</variable-assignment>
+						<variable-assignment variable="morning-insulin-intake">
+							<qualitative-constant value="before-meal"/>
+						</variable-assignment>
+						<variable-assignment variable="evening-insulin-dose">
+							<numerical-constant value="6"/>
+						</variable-assignment>
+						<variable-assignment variable="evening-insulin-intake">
+							<qualitative-constant value="before-meal"/>
+						</variable-assignment>
+						<plan-activation>
+							<plan-schema name="Find-insulin-doses">
+								<argument-value name="evening-dose">
+									<variable-ref name="evening-insulin-dose"/>
+								</argument-value>
+								<argument-value name="morning-dose">
+									<variable-ref name="morning-insulin-dose"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-evening-dose" variable-name="evening-insulin-dose"/>
+								<return-value-assignment return-value-name="out-morning-dose" variable-name="morning-insulin-dose"/>
+							</plan-schema>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Find-insulin-doses">
+				<arguments>
+					<argument name="morning-dose" type="amount"/>
+					<argument name="evening-dose" type="amount"/>
+				</arguments>
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="not-equal">
+								<left-hand-side>
+									<parameter-ref name="glucose-monitoring"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="bad"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<cyclical-plan>
+						<cyclical-plan-body>
+							<plan-activation>
+								<plan-schema name="Test-glucose-and-adapt-insulin">
+									<argument-value name="evening-dose">
+										<variable-ref name="evening-dose"/>
+									</argument-value>
+									<argument-value name="morning-dose">
+										<variable-ref name="morning-dose"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-evening-dose" variable-name="evening-dose"/>
+									<return-value-assignment return-value-name="out-morning-dose" variable-name="morning-dose"/>
+								</plan-schema>
+							</plan-activation>
+						</cyclical-plan-body>
+						<repeat-specification>
+							<retry-delay>
+								<minimum>
+									<numerical-constant scale="time" unit="d" value="2"/>
+								</minimum>
+								<maximum>
+									<numerical-constant scale="time" unit="d" value="3"/>
+								</maximum>
+							</retry-delay>
+						</repeat-specification>
+					</cyclical-plan>
+				</plan-body>
+				<returns>
+					<return-value name="out-evening-dose">
+						<variable-ref name="evening-dose"/>
+					</return-value>
+					<return-value name="out-morning-dose">
+						<variable-ref name="morning-dose"/>
+					</return-value>
+				</returns>
+			</plan>
+			<plan name="Test-glucose-and-adapt-insulin">
+				<arguments>
+					<argument name="evening-dose" type="amount"/>
+					<argument name="morning-dose" type="amount"/>
+				</arguments>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Four-points-day-curve"/>
+						</plan-activation>
+						<!--A Display would be needed HERE!!! (to display both the glucose values and the currend doses)-->
+						<ask>
+							<parameter-ref name="evening-adaptation"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="morning-adaptation"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+				<returns>
+					<return-value name="out-evening-dose">
+						<operation operator="add">
+							<variable-ref name="evening-dose"/>
+							<parameter-ref name="evening-adaptation"/>
+						</operation>
+					</return-value>
+					<return-value name="out-morning-dose">
+						<operation operator="add">
+							<variable-ref name="morning-dose"/>
+							<parameter-ref name="morning-adaptation"/>
+						</operation>
+					</return-value>
+				</returns>
+			</plan>
+			<!--Treatment of CV risk factors-->
+			<plan name="Treatment-of-CV-disease-risk-factors">
+				<plan-body>
+					<subplans type="unordered" wait-for-optional-subplans="yes">
+						<wait-for>
+							<none/>
+						</wait-for>
+						<!--To revieW!!! (?)-->
+						<plan-activation>
+							<plan-schema name="Smoking-advice"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Hypertension-treatment"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Cholesterol-treatment"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Microalbuminuria-treatment"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Smoking-advice" title="Recommend strongly that the patient stops smoking">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="smoking"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Hypertension-treatment">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="greater-than">
+									<left-hand-side>
+										<parameter-ref name="higher-blood-pressure"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="150"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<parameter-ref name="lower-blood-pressure"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="85"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<plan-activation>
+						<plan-schema name="NHG-hypertension-protocol-referral"/>
+					</plan-activation>
+				</plan-body>
+			</plan>
+			<plan name="NHG-hypertension-protocol-referral" title="Refer to NHG Hypertension protocol">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Cholesterol-treatment">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="and">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="fat-metabolism-problems"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<variable-ref name="life-expectancy"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="5"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="CH-disease-risk"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="significant"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<variable-assignment variable="cholesterol-treatment">
+							<qualitative-constant value="true"/>
+						</variable-assignment>
+						<plan-activation>
+							<plan-schema name="NHG-cholesterol-protocol-referral"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="NHG-cholesterol-protocol-referral" title="Refer to NHG Cholesterol protocol">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Microalbuminuria-treatment">
+				<value-defs>
+					<variable-def name="ACE-inhibitors" scalar-or-not="list" type="String"/>
+					<variable-def name="ACE-inhibitors-doses" scalar-or-not="list" type="amount"/>
+					<iterator-def name="iterator-ACE-inhibitors" start-at="first-element">
+						<variable-ref name="antidiabetics"/>
+					</iterator-def>
+					<iterator-def name="iterator-ACE-inhibitor-doses" start-at="first-element">
+						<variable-ref name="antidiabetic-doses"/>
+					</iterator-def>
+				</value-defs>
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="and">
+								<comparison type="less-than">
+									<left-hand-side>
+										<variable-ref name="age"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="50"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="microalbuminuria"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="drug-name"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<put-last list="ACE-inhibitors">
+							<element>
+								<parameter-ref name="drug-name"/>
+							</element>
+						</put-last>
+						<plan-activation>
+							<plan-schema name="Initialise-drug-doses">
+								<argument-value name="drugs">
+									<variable-ref name="ACE-inhibitors"/>
+								</argument-value>
+								<argument-value name="iterator-drugs">
+									<variable-ref name="iterator-ACE-inhibitors"/>
+								</argument-value>
+								<argument-value name="drug-doses">
+									<variable-ref name="ACE-inhibitor-doses"/>
+								</argument-value>
+								<argument-value name="iterator-drug-doses">
+									<variable-ref name="iterator-ACE-inhibitor-doses"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-drug-doses" variable-name="ACE-inhibitor-doses"/>
+							</plan-schema>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Find-ACE-inhibitor-doses">
+								<argument-value name="drugs">
+									<variable-ref name="ACE-inhibitors"/>
+								</argument-value>
+								<argument-value name="iterator-drugs">
+									<variable-ref name="iterator-ACE-inhibitors"/>
+								</argument-value>
+								<argument-value name="drug-doses">
+									<variable-ref name="ACE-inhibitor-doses"/>
+								</argument-value>
+								<argument-value name="iterator-drug-doses">
+									<variable-ref name="iterator-ACE-inhibitor-doses"/>
+								</argument-value>
+								<return-value-assignment return-value-name="out-drug-doses" variable-name="ACE-inhibitor-doses"/>
+							</plan-schema>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Find-ACE-inhibitor-doses">
+				<arguments>
+					<argument name="drugs" scalar-or-not="list" type="String"/>
+					<argument name="iterator-drugs" type="iterator"/>
+					<argument name="drug-doses" scalar-or-not="list" type="amount"/>
+					<argument name="iterator-drug-doses" type="iterator"/>
+					<argument name="ACE-inhibitor-maximal-doses" type="Boolean"/>
+				</arguments>
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<simple-condition-combination type="and">
+									<comparison type="less-or-equal">
+										<left-hand-side>
+											<parameter-ref name="higher-blood-pressure"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant value="140"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="less-or-equal">
+										<left-hand-side>
+											<parameter-ref name="lower-blod-pressure"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant value="80"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="ACE-inhibitor-maximal-doses"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<cyclical-plan>
+						<cyclical-plan-body>
+							<plan-activation>
+								<plan-schema name="Increase-drug-doses">
+									<argument-value name="drugs">
+										<variable-ref name="drugs"/>
+									</argument-value>
+									<argument-value name="iterator-drugs">
+										<variable-ref name="iterator-drugs"/>
+									</argument-value>
+									<argument-value name="drug-doses">
+										<variable-ref name="drug-doses"/>
+									</argument-value>
+									<argument-value name="iterator-drug-doses">
+										<variable-ref name="iterator-drug-doses"/>
+									</argument-value>
+									<return-value-assignment return-value-name="out-drug-doses" variable-name="drug-doses"/>
+									<return-value-assignment return-value-name="out-maximal-drug-doses" variable-name="ACE-inhibitor-maximal-doses"/>
+								</plan-schema>
+							</plan-activation>
+						</cyclical-plan-body>
+						<repeat-specification>
+							<!--Expert suggests to increase the dose every 1 to 3 months ('gradually').-->
+							<retry-delay>
+								<minimum>
+									<numerical-constant scale="time" unit="mon" value="1"/>
+								</minimum>
+								<maximum>
+									<numerical-constant scale="time" unit="mon" value="3"/>
+								</maximum>
+							</retry-delay>
+						</repeat-specification>
+					</cyclical-plan>
+				</plan-body>
+				<returns>
+					<return-value name="out-drug-doses">
+						<variable-ref name="drug-doses"/>
+					</return-value>
+				</returns>
+			</plan>
+			<!--Periodical controls-->
+			<plan name="Quarterly-control">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<ask>
+							<parameter-ref name="wellbeing"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="hypoglycemia"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="feeding-problems"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="treatment-problems"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="weight"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="DMT2-treatment"/>
+										</left-hand-side>
+										<right-hand-side>
+											<string-constant value="insulin"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="DMT2-treatment"/>
+										</left-hand-side>
+										<right-hand-side>
+											<string-constant value="insulin-plus-antidiabetics"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Four-points-day-curve"/>
+								</plan-activation>
+							</then-branch>
+							<else-branch>
+								<plan-activation>
+									<plan-schema name="Fasting-glucose-test"/>
+								</plan-activation>
+							</else-branch>
+						</if-then-else>
+						<subplans type="sequentially">
+							<wait-for>
+								<all/>
+							</wait-for>
+							<ask>
+								<parameter-ref name="feet-problems"/>
+								<time-out>
+									<now/>
+								</time-out>
+							</ask>
+							<if-then-else>
+								<simple-condition>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="feet-problems"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition>
+								<then-branch>
+									<plan-activation>
+										<plan-schema name="Feet-examination"/>
+									</plan-activation>
+								</then-branch>
+							</if-then-else>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Annual-control">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Quarterly-control"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="visus-problems"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="CV-problems"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="neuropathy"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="sexual-problems"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="higher-blood-pressure"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="lower-blood-pressure"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<plan-activation>
+							<plan-schema name="Feet-examination"/>
+						</plan-activation>
+						<if-then-else>
+							<simple-condition>
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="DMT2-treatment"/>
+										</left-hand-side>
+										<right-hand-side>
+											<string-constant value="insulin"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="DMT2-treatment"/>
+										</left-hand-side>
+										<right-hand-side>
+											<string-constant value="insulin-plus-antidiabetics"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Injection-points-investigation"/>
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<ask>
+							<parameter-ref name="GHb"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<ask>
+							<parameter-ref name="creatinin"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="cholesterol-treatment"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="false"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Cholesterol-tests"/>
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="less-than">
+									<left-hand-side>
+										<variable-ref name="age"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant unit="y" value="50"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Albumin-test"/>
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<plan-activation>
+							<plan-schema name="Funduscopy"/>
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Injection-points-investigation" title="Perform an  investigation of injection points">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Funduscopy" title="Perform a funduscopy">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<!--Policy for related diseases-->
+			<plan name="Policy-for-concurrent-diseases">
+				<conditions>
+					<filter-precondition>
+						<simple-condition label="concurrent-diseases">
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="fever"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="vomiting"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="diarrhea"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="concurrent-diseases-over"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Extra-fluid-intake-prescription"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Glucose-lowering-therapy-advice"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="concurrent-diseases-over"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Extra-fluid-intake-prescription" title="Prescribe extra fluid intake">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Glucose-lowering-therapy-advice" title="Temporary increase based on blood glucose levels. Never discontinue insulin, even if less food is consumed">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Policy-for-hypoglycemic-coma">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="hypoglycemic-coma"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="hypoglycemic-coma-over"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<subplans type="any-order">
+							<wait-for>
+								<one/>
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Glucose-solution-prescription-manual"/>
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Glucagon-prescription-manual"/>
+							</plan-activation>
+						</subplans>
+						<!--The following is delayed until the patient is back to conscious state-->
+						<plan-activation>
+							<plan-schema name="Carbohydrate-rich-feeding-prescription"/>
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Hypoglycemia-cause-investigation"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="hypoglycemic-coma-over"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Glucose-solution-prescription-manual" title="Prescribe glucose solution">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Glucagon-prescription-manual" title="Prescribe glucagon">
+				<conditions>
+					<activate-mode started="manual"/>
+				</conditions>
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Carbohydrate-rich-feeding-prescription" title="Prescribe carbohydrate rich feeding">
+				<conditions>
+					<filter-precondition>
+						<!--conscious state-->
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<variable-ref name="conscious"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Hypoglycemia-cause-investigation" title="Perform a investigation of hypoglycemia cause">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<!--Consultation and referrals-->
+			<plan name="Policy-for-consultation">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="insulin-adjustment-needed"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<simple-condition-combination type="and">
+									<!--To revieW! ('too high postprandial values')-->
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="postprandial-glucose-monitoring"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="bad"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="insulin-dd"/>
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant value="2"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="diabetes-ulcus-after-2-weeks"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<parameter-ref name="creatinin"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="200"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="less-than">
+									<left-hand-side>
+										<parameter-ref name="creatinin-clearance"/>
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="30"/>
+									</right-hand-side>
+								</comparison>
+								<!--urgent hyperglycemia-->
+								<simple-condition-combination type="or">
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="lethargy"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="dehydration"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+									<comparison type="equal">
+										<left-hand-side>
+											<variable-ref name="vomiting"/>
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition-combination>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="hypoglycemic-coma-after-30-min"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="consultation-over"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Consultation"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="consultation-over"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Consultation" title="Consultation">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Policy-for-chiropodist-referral">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="pressure-points"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="bad-standing-habits"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="chiropodist-referral-over"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Chiropodist-referral"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="chiropodist-referral-over"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Chiropodist-referral" title="Chiropodist referral">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+			<plan name="Policy-for-nurse-referral">
+				<conditions>
+					<filter-precondition>
+						<simple-condition>
+							<simple-condition-combination type="or">
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="self-monitoring-training-needed"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+								<comparison type="equal">
+									<left-hand-side>
+										<variable-ref name="insulin-treatment-start"/>
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true"/>
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="nurse-referral-over"/>
+								</left-hand-side>
+								<right-hand-side>
+									<qualitative-constant value="true"/>
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all/>
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Nurse-referral"/>
+						</plan-activation>
+						<ask>
+							<parameter-ref name="nurse-referral-over"/>
+							<time-out>
+								<now/>
+							</time-out>
+						</ask>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Nurse-referral" title="Nurse referral">
+				<plan-body>
+					<user-performed/>
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

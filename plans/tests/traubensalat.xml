@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="test-traubensalat">
+		<administrative-data original-author="0625008" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="traubensalat">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<subplans type="any-order">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="nuesse_feinhacken" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="trauben_halbieren" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="kaese_wuerfeln" />
+							</plan-activation>
+						</subplans>
+						<subplans type="unordered">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="trauben_dazugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="nuesse_dazugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="mayonaise_dazugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="wuerzen" />
+							</plan-activation>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="mischen" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="durchziehen_lassen" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="kaese_wuerfeln">
+				<plan-body />
+			</plan>
+			<plan title="" name="trauben_halbieren">
+				<plan-body />
+			</plan>
+			<plan title="" name="nuesse_feinhacken">
+				<plan-body />
+			</plan>
+			<plan title="" name="wuerzen">
+				<plan-body />
+			</plan>
+			<plan title="" name="nuesse_dazugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="trauben_dazugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="mayonaise_dazugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="mischen">
+				<plan-body />
+			</plan>
+			<plan title="" name="durchziehen_lassen">
+				<plan-body />
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

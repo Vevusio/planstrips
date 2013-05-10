@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="cancel" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P25" title="Cancel Region">
+  			<plan-body>
+  				<subplans type="parallel">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<subplans type="sequentially" wait-for-optional-subplans="yes">
+  						<wait-for>
+  							<none />
+  						</wait-for>
+  						<plan-activation>
+							<plan-schema name="Plan_A" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" />
+						</plan-activation>
+  					</subplans>
+  					<subplans type="sequentially" wait-for-optional-subplans="yes">
+  						<wait-for>
+  							<none />
+  						</wait-for>
+	  					<plan-activation>
+							<plan-schema name="Plan_C" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_D" />
+						</plan-activation>
+  					</subplans>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_A">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="no" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-2" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  				<abort-condition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</abort-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_B">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="no" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-3" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  				<abort-condition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</abort-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_C">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="no" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-3" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  				<abort-condition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<latest>
+  										<numerical-constant value="0" />
+  									</latest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</abort-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_D">
+  			<conditions>
+  				<filter-precondition>
+  					<constraint-not>
+  						<plan-state-constraint state="aborted">
+  							<plan-pointer>
+  								<static-plan-pointer plan-name="Plan_C" />
+  							</plan-pointer>
+  							<time-annotation>
+  								<now/>
+  							</time-annotation>
+  						</plan-state-constraint>
+  					</constraint-not>
+  				</filter-precondition>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-2" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

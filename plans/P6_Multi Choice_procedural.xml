@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<comment text="This is P6 Multi Choice implemented with procedural methods." />
+		<plan-group>
+			<plan name="root_P6" title="root">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" /> 	
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Multi_Choice" /> 
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<conditions>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+								<time-range>
+									<starting-shift>
+										<latest>
+											<numerical-constant
+												value="-2" unit="s">
+											</numerical-constant>
+										</latest>
+									</starting-shift>
+								</time-range>
+								<now />
+							</time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Multi_Choice" title="Multi Choice">
+				<plan-body>
+					<subplans type="unordered" wait-for-optional-subplans="yes">
+						<wait-for>
+							<one />
+						</wait-for>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="less-than">
+									<left-hand-side>
+										<parameter-ref name="age" />
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="30" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Plan_A" />
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<parameter-ref name="age" />
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="15" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+								<plan-activation>
+									<plan-schema name="Plan_B" />
+								</plan-activation>
+							</then-branch>
+						</if-then-else>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

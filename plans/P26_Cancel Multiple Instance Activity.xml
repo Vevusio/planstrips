@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="cancel" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P26" title="Cancel Multiple Instance Activity">
+  			<plan-body>
+  				<subplans type="parallel">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+						<plan-schema name="Plan" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan" />
+					</plan-activation>
+					<plan-activation>
+						<plan-schema name="Plan" />
+					</plan-activation>
+				</subplans>
+			</plan-body>
+		</plan>
+  		<plan name="Plan">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-4" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  				<abort-condition>
+  					<parameter-proposition parameter-name="cancel">
+  						<value-description type="equal">
+  							<qualitative-constant value="yes" />
+  						</value-description>
+  						<context>
+  							<any />
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</abort-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

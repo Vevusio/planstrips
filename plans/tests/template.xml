@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="test-">
+		<administrative-data original-author="0625008" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="">
+				<plan-body>
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

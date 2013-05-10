@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="empty" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P22" title="Recursion">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self/>
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-4" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+				<subplans type="sequentially">
+					<wait-for>
+						<all />
+					</wait-for>
+					<plan-activation>
+						<plan-schema name="Plan_C" />
+					</plan-activation>
+					<subplans type="any-order">
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" />
+						</plan-activation>
+					</subplans>
+					<plan-activation>
+						<plan-schema name="Plan_D" />
+					</plan-activation>
+				</subplans>
+<!--  				<plan-activation>
+  					<plan-schema name="root_P22">
+  						<time-annotation>
+  							<time-range>
+  								<starting-shift>
+  									<earliest>
+  										<numerical-constant value="1" unit="s" />
+  									</earliest>
+  								</starting-shift>
+  							</time-range>
+  							<now/>
+  						</time-annotation>
+  					</plan-schema>
+  				</plan-activation -->
+  			</plan-body>
+  		</plan>
+		<plan name="Plan_C" title="Plan C">
+			<plan-body>
+				<user-performed />
+			</plan-body>
+		</plan>
+		<plan name="Plan_A" title="Plan A">
+			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self/>
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+			<plan-body>
+				<plan-activation>
+					<plan-schema name="root_P22" />
+				</plan-activation>
+			</plan-body>
+		</plan>
+		<plan name="Plan_B" title="Plan B">
+			<plan-body>
+				<user-performed />
+			</plan-body>
+		</plan>
+		<plan name="Plan_D" title="Plan D">
+			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self/>
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-2" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+			<plan-body>
+				<user-performed />
+			</plan-body>
+		</plan>	
+  	</plan-group>
+  </plans>
+</plan-library>

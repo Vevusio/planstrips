@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P4" title="root">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Exclusive_Choice" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Exclusive_Choice" title="Exclusive Choice">	
+				<plan-body>
+					<if-then-else>
+						<simple-condition>
+							<simple-condition-combination type="and">
+								<comparison type="less-or-equal">
+									<left-hand-side>
+										<parameter-ref name="age" />
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="15" />
+									</right-hand-side>
+								</comparison>
+								<comparison type="greater-or-equal">
+									<left-hand-side>
+										<parameter-ref name="age" />
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="6" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition-combination>
+						</simple-condition>
+						<then-branch>
+							<plan-activation>
+								<plan-schema name="Plan_A" />
+							</plan-activation>
+						</then-branch>
+						<else-branch> 		<!-- can contain further if-then-else nestings -->
+							<if-then-else>
+								<simple-condition>
+									<comparison type="greater-than">
+										<left-hand-side>
+											<parameter-ref name="age" />
+										</left-hand-side>
+										<right-hand-side>
+											<numerical-constant value="15"/>
+										</right-hand-side>
+									</comparison>
+								</simple-condition>
+								<then-branch>
+									<plan-activation>
+										<plan-schema name="Plan_B" />
+									</plan-activation>
+								</then-branch>
+							</if-then-else>
+						</else-branch>
+					</if-then-else>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

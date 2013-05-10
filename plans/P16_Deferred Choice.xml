@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="choose_plan">
+				<qualitative-entry entry="A" />
+				<qualitative-entry entry="B" />
+				<qualitative-entry entry="none" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="plan" required="yes" type="choose_plan">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P16" title="Deferred Choice">
+				<plan-body>
+					<subplans type="any-order">
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" /> 	
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="plan">
+							<value-description type="equal">
+								<qualitative-constant value="A" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="plan">
+							<value-description type="equal">
+								<qualitative-constant value="B" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

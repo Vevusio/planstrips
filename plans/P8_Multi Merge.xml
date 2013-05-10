@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+  <domain-defs>
+  	<domain name="mainDomain">
+  		<parameter-group>
+  			<parameter-def name="age" required="yes" type="Age">
+  				<raw-data-def mode="manual" use-as-context="no" />
+  			</parameter-def>
+  		</parameter-group>
+  	</domain>
+  </domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P8" title="Multi Merge">
+  			<plan-body>
+  				<subplans type="unordered">
+  					<wait-for>
+  						<all></all>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Pre_Choice" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Choice" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Multi_Merge" />
+  					</plan-activation>
+					<plan-activation>
+  						<plan-schema name="Multi_Merge" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="Pre_Choice">
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Choice">
+  			<conditions>
+  				<filter-precondition>
+  					<plan-state-constraint state="completed">
+  						<plan-pointer>
+  							<static-plan-pointer plan-name="Pre_Choice" />
+  						</plan-pointer>
+  						<time-annotation>
+  							<now />
+  						</time-annotation>
+  					</plan-state-constraint>
+  				</filter-precondition>
+  			</conditions>
+  			<plan-body>
+  				<subplans type="unordered" wait-for-optional-subplans="yes">
+  					<wait-for>
+  						<one />
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Plan_A" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Plan_B" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_A">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+						<time-annotation>
+                           	<time-range>
+                           		<starting-shift>
+                           			<latest>
+                           				<numerical-constant value="-1" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Plan_B">
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Multi_Merge">
+  			<conditions>
+  				<filter-precondition>
+  					<constraint-combination type="and">
+  						<constraint-combination type="or">
+  							<plan-state-constraint state="completed">
+  								<plan-pointer>
+  									<static-plan-pointer plan-name="Plan_A" />
+  								</plan-pointer>
+  								<time-annotation>
+  									<always />
+  								</time-annotation>
+  							</plan-state-constraint>
+  							<plan-state-constraint state="completed">
+  								<plan-pointer>
+  									<static-plan-pointer plan-name="Plan_B" />
+	  							</plan-pointer>
+  								<time-annotation>
+  									<always />
+  								</time-annotation>
+  							</plan-state-constraint>
+  						</constraint-combination>
+  						<constraint-not>
+	  						<plan-state-constraint state="activated">
+  								<self/>
+  								<time-annotation>
+  									<now />
+  								</time-annotation>
+  							</plan-state-constraint>
+  						</constraint-not>
+  					</constraint-combination>
+  					
+  				</filter-precondition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

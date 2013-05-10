@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="Plan_top">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_left" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_right" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Plan_left">
+				<plan-body>
+					<subplans type="unordered">
+						<wait-for>
+							<all />
+						</wait-for>
+						<if-then-else>
+							<simple-condition>
+								<comparison type="equal">
+									<left-hand-side>
+										<parameter-ref name="cond1" />
+									</left-hand-side>
+									<right-hand-side>
+										<qualitative-constant value="true" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<then-branch>
+							</then-branch>
+						</if-then-else>
+						<ask>
+							<parameter-ref name="physical-exam-OK" />
+							<time-out>
+								<now />
+							</time-out>
+						</ask>
+						<user-performed />
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Plan_right">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<user-performed />
+						<subplans type="any-order">
+							<ask>
+								<parameter-ref name="physical-exam-OK" />
+								<time-out>
+									<now />
+								</time-out>
+							</ask>
+							<if-then-else>
+								<simple-condition>
+									<comparison type="equal">
+										<left-hand-side>
+											<parameter-ref name="cond1" />
+										</left-hand-side>
+										<right-hand-side>
+											<qualitative-constant value="true" />
+										</right-hand-side>
+									</comparison>
+								</simple-condition>
+								<then-branch />
+							</if-then-else>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

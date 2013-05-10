@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="p_Number" type="int">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P40" title="Interleaved Routing">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+						<all/>		
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Interleaved_Block" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Post"/>
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="Interleaved_Block">
+  			<plan-body>
+  				<subplans type="any-order">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="plan_A"/>
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="plan_B"/>
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="plan_C"/>
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="plan_A">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-4" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="plan_B">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="p_Number">
+  						<value-description type="equal">
+  							<numerical-constant value="1"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed/>
+  			</plan-body>
+  		</plan>
+  		<plan name="plan_C">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="p_Number">
+  						<value-description type="equal">
+  							<numerical-constant value="2"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  			</conditions>
+  			<plan-body>
+				<user-performed/>
+			</plan-body>
+		</plan>
+  		<plan name="Post">
+  			<conditions>
+  				<filter-precondition>
+  					<parameter-proposition parameter-name="p_Number">
+  						<value-description type="equal">
+  							<numerical-constant value="2"/>
+  						</value-description>
+  						<context>
+  							<any/>
+  						</context>
+  						<time-annotation>
+  							<now/>
+  						</time-annotation>
+  					</parameter-proposition>
+  				</filter-precondition>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                	           		<latest>
+                            			<numerical-constant value="-3" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>
+

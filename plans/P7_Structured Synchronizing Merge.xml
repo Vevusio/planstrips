@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P7" title="Structured Synchronizing Merge">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Pre_Choice" /> 
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Multi_Choice" /> 
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Merge" /> 
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Multi_Choice" title="Multi Choice">
+				<plan-body>
+					<subplans type="unordered" wait-for-optional-subplans="yes"> 	<!-- or parallel -->
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" /> 	<!-- do A if age less 30 -->
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" /> 	<!-- do B if age greater 15 -->
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_C" /> 	<!-- do C if age less 20 -->
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="less-than">
+								<numerical-constant value="30" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<time-range>
+							   		<starting-shift>
+							     		<latest>
+							       			<numerical-constant value="0" />
+										</latest>
+									</starting-shift>
+								</time-range>
+								<plan-state-transition state="considered" instance-type="first">
+									<self />
+								</plan-state-transition>
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant
+                            					value="-1" unit="s">
+                            				</numerical-constant>
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="greater-than">
+								<numerical-constant value="15" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<time-range>
+							   		<starting-shift>
+							     		<latest>
+							       			<numerical-constant value="0" />
+										</latest>
+									</starting-shift>
+								</time-range>
+								<plan-state-transition state="considered" instance-type="first">
+									<self />
+								</plan-state-transition>
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant
+                            					value="-2" unit="s">
+                            				</numerical-constant>
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_C" title="Plan C">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="less-than">
+								<numerical-constant value="20" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<time-range>
+							   		<starting-shift>
+							     		<latest>
+							       			<numerical-constant value="0" />
+										</latest>
+									</starting-shift>
+								</time-range>
+								<plan-state-transition state="considered" instance-type="first">
+									<self />
+								</plan-state-transition>
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant
+                            					value="-2" unit="s">
+                            				</numerical-constant>
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Pre_Choice" title="Pre-Choice">
+				<conditions>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+								<time-range>
+									<starting-shift>
+										<latest>
+											<numerical-constant
+												value="-2" unit="s">
+											</numerical-constant>
+										</latest>
+									</starting-shift>
+								</time-range>
+								<now />
+							</time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Merge" title="Merge">
+				<conditions>
+					<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant
+                            					value="-1" unit="s">
+                            				</numerical-constant>
+                            			</latest>
+									</starting-shift>
+								</time-range>
+								<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

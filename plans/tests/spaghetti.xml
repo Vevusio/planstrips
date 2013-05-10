@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="test-strasse">
+		<administrative-data original-author="0625008" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="spaghetti_essen">
+				<plan-body>
+					<subplans type="sequentially">
+					<wait-for><to-be-defined /></wait-for>
+						<subplans type="parallel">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="nudeln_kochen" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="sosse_zubereiten" />
+							</plan-activation>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="teller_servieren" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="ueber_strasse_laufen">
+				<plan-body />
+			</plan>
+			<plan title="" name="ueber_strasse_gehen">
+				<plan-body />
+			</plan>
+			<plan title="" name="lauch_putzen">
+				<plan-body />
+			</plan>
+			<plan title="" name="lauch_waschen">
+				<plan-body />
+			</plan>
+			<plan title="" name="lauch_schneiden">
+				<plan-body />
+			</plan>
+			<plan title="" name="pepperoni_wuerfeln">
+				<plan-body />
+			</plan>
+			<plan title="" name="tomaten_wuerfeln">
+				<plan-body />
+			</plan>
+			<plan title="" name="olivenoel_in_pfanne">
+				<plan-body />
+			</plan>
+			<plan title="" name="lauch_hinzugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="tomaten_anbraten">
+				<plan-body />
+			</plan>
+			<plan title="" name="pepperoni_anbraten">
+				<plan-body />
+			</plan>
+			<plan title="" name="knoblauch_dazugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="tomatenmark_hinzugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="zucker_hinzugeben">
+				<plan-body />
+			</plan>
+			<plan title="" name="topf_wasser_auffuellen">
+				<plan-body />
+			</plan>
+			<plan title="" name="herdplatte_einschalten">
+				<plan-body />
+			</plan>
+			<plan title="" name="topf_voll_auf_herd_stellen">
+				<plan-body />
+			</plan>
+			<plan title="" name="spaghettinudeln_in_topf">
+				<plan-body />
+			</plan>
+			<plan title="" name="nudeln_kochen">
+				<plan-body>
+					<subplans type="sequentially">
+					<wait-for><to-be-defined /></wait-for>
+						<subplans type="unordered">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="herdplatte_einschalten" />
+							</plan-activation>
+							<subplans type="sequentially">
+							<wait-for><to-be-defined /></wait-for>
+								<plan-activation>
+									<plan-schema name="topf_wasser_auffuellen" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="topf_voll_auf_herd_stellen" />
+								</plan-activation>
+							</subplans>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="spaghettinudeln_in_topf" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="spaghetti_auf_teller" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="sosse_zubereiten">
+				<plan-body>
+					<subplans type="sequentially">
+					<wait-for><to-be-defined /></wait-for>
+						<subplans type="unordered">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="gemuese_vorbereiten" />
+							</plan-activation>
+							<subplans type="unordered">
+							<wait-for><to-be-defined /></wait-for>
+								<plan-activation>
+									<plan-schema name="herdplatte_einschalten" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="pfanne_auf_herd_stellen" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="olivenoel_in_pfanne" />
+								</plan-activation>
+							</subplans>
+						</subplans>
+						<subplans type="parallel">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="pepperoni_anbraten" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="tomaten_anbraten" />
+							</plan-activation>
+						</subplans>
+						<subplans type="unordered">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="zucker_hinzugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="tomatenmark_hinzugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="knoblauch_dazugeben" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="lauch_hinzugeben" />
+							</plan-activation>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="sosse_auf_teller" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="pfanne_auf_herd_stellen">
+				<plan-body />
+			</plan>
+			<plan title="" name="lauch_vorbereiten">
+				<plan-body>
+					<subplans type="sequentially">
+					<wait-for><to-be-defined /></wait-for>
+						<subplans type="parallel">
+						<wait-for><to-be-defined /></wait-for>
+							<plan-activation>
+								<plan-schema name="lauch_waschen" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="lauch_putzen" />
+							</plan-activation>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="lauch_schneiden" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="gemuese_vorbereiten">
+				<plan-body>
+					<subplans type="unordered">
+					<wait-for><to-be-defined /></wait-for>
+						<plan-activation>
+							<plan-schema name="lauch_vorbereiten" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="pepperoni_wuerfeln" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="tomaten_wuerfeln" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="spaghetti_auf_teller">
+				<plan-body />
+			</plan>
+			<plan title="" name="sosse_auf_teller">
+				<plan-body />
+			</plan>
+			<plan title="" name="teller_servieren">
+				<plan-body />
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

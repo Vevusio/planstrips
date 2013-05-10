@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<parameter-group>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P9" title="Structured Discriminator">
+				<plan-body>
+					<subplans type="unordered">
+						<wait-for>
+							<all />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" /> 	
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" /> 	
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_Subsequent" /> 	
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            <time-range>
+                            	<starting-shift>
+                            		<latest>
+                            			<numerical-constant value="-4" unit="s" />
+                            		</latest>
+								</starting-shift>
+							</time-range>
+                            <now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_Subsequent" title="Plan Subsequent">
+				<conditions>
+					<filter-precondition>
+						<constraint-combination type="or">
+							<plan-state-constraint state="completed">
+								<plan-pointer>
+									<static-plan-pointer plan-name="Plan_B" />
+								</plan-pointer>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</plan-state-constraint>
+							<plan-state-constraint state="completed">
+								<plan-pointer>
+									<static-plan-pointer plan-name="Plan_A" />
+								</plan-pointer>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</plan-state-constraint>
+						</constraint-combination>
+					</filter-precondition>
+	  				<complete-condition>
+  						<plan-state-constraint state="activated">
+  							<self />
+  							<time-annotation>
+                	            <time-range>
+                    	        	<starting-shift>
+                        	    		<latest>
+                            				<numerical-constant value="-2" unit="s" />
+                        	    		</latest>
+									</starting-shift>
+								</time-range>
+                        	    <now />
+                    		</time-annotation>
+  						</plan-state-constraint>
+  					</complete-condition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

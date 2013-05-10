@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "../Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="enrol" required="yes" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+				<parameter-def name="M1" required="yes" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P18" title="Milestone">
+  			<plan-body>
+  				<subplans type="unordered">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="enrollment_administrative" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="enrol_student" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+		<plan name="enrollment_administrative" title="Block">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="open" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="dummy" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="close" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+  		<plan name="open">
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="dummy">
+  			<conditions>
+  				<setup-precondition>
+						<plan-state-constraint state="selected">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-4" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</setup-precondition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="close">
+  			<conditions>
+  				<complete-condition>
+						<plan-state-constraint state="activated">
+							<self />
+							<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-2" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+						</plan-state-constraint>
+					</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="enrol_student">
+  			<conditions>
+  				<filter-precondition>
+  					<constraint-combination type="and">
+  						<plan-state-constraint state="completed">
+  							<plan-pointer>
+  								<static-plan-pointer plan-name="open" />
+  							</plan-pointer>
+  							<time-annotation>
+  								<now />
+  							</time-annotation>
+  						</plan-state-constraint>
+  						<constraint-not>
+  							<plan-state-constraint state="activated">
+  								<plan-pointer>
+  									<static-plan-pointer plan-name="close"/>
+  								</plan-pointer>
+  								<time-annotation>
+  									<now/>
+  								</time-annotation>
+  							</plan-state-constraint>
+  						</constraint-not>
+  						<constraint-not>
+  							<plan-state-constraint state="completed">
+  								<plan-pointer>
+  									<static-plan-pointer plan-name="close"/>
+  								</plan-pointer>
+  								<time-annotation>
+  									<now/>
+  								</time-annotation>
+  							</plan-state-constraint>
+  						</constraint-not>
+  						<parameter-proposition parameter-name="enrol">
+  							<value-description type="equal">
+  								<qualitative-constant value="yes" />
+  							</value-description>
+  							<context>
+  								<any />
+  							</context>
+  							<time-annotation>
+  								<now />
+  							</time-annotation>
+  						</parameter-proposition>
+  					</constraint-combination>
+  				</filter-precondition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

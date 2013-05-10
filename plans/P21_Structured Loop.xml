@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="KK"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="repeat" type="Boolean">
+					<raw-data-def mode="manual" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+  <plans>
+  	<plan-group>
+  		<plan name="root_P21" title="Structured Loop">
+  			<plan-body>
+  				<subplans type="sequentially">
+  					<wait-for>
+  						<all/>
+  					</wait-for>
+  					<plan-activation>
+  						<plan-schema name="Cyclical_Plan" />
+  					</plan-activation>
+  					<plan-activation>
+  						<plan-schema name="Post_Plan" />
+  					</plan-activation>
+  				</subplans>
+  			</plan-body>
+  		</plan>
+		<plan name="Cyclical_Plan" title="Cyclical Plan">
+			<conditions>
+				<complete-condition>
+					<constraint-combination type="and">
+						<plan-state-constraint state="completed">
+							<plan-pointer>
+								<static-plan-pointer plan-name="Repeat" />
+							</plan-pointer>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</plan-state-constraint>
+						<parameter-proposition parameter-name="repeat">
+							<value-description type="equal">
+								<qualitative-constant value="no"/>
+							</value-description>
+							<context>
+								<any/>
+							</context>
+							<time-annotation>
+								<now/>
+							</time-annotation>
+						</parameter-proposition>
+					</constraint-combination>
+				</complete-condition>
+			</conditions>
+  			<plan-body>
+  				<cyclical-plan>
+  					<cyclical-plan-body>
+  						<subplans type="sequentially" wait-for-optional-subplans="yes">
+  							<wait-for>
+  								<one/>
+  							</wait-for>
+  							<plan-activation>
+  								<plan-schema name="Repeat" />
+  							</plan-activation>
+  							<plan-activation>
+  								<plan-schema name="Repeat_Plan" />
+  							</plan-activation>
+  						</subplans>
+  					</cyclical-plan-body>
+  					<cyclical-time-annotation>
+  						<time-range />
+  						<set-of-cyclical-time-points>
+  							<time-point>
+  								<now/>
+  							</time-point>
+  							<offset>
+  								<numerical-constant value="0"/>
+  							</offset>
+  							<frequency>
+  								<numerical-constant value="1" unit="s"/>
+  							</frequency>
+  						</set-of-cyclical-time-points>
+  					</cyclical-time-annotation>
+  				</cyclical-plan>
+  			</plan-body>
+  		</plan>
+  		<plan name="Repeat">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Repeat_Plan">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                           	<time-range>
+                           		<starting-shift>
+                           			<latest>
+                           				<numerical-constant value="-1" unit="s" />
+                           			</latest>
+								</starting-shift>
+							</time-range>
+                           	<now />
+                    	</time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  		<plan name="Post_Plan">
+  			<conditions>
+  				<complete-condition>
+  					<plan-state-constraint state="activated">
+  						<self />
+  						<time-annotation>
+                            	<time-range>
+                            		<starting-shift>
+                            			<latest>
+                            				<numerical-constant value="-1" unit="s" />
+                            			</latest>
+									</starting-shift>
+								</time-range>
+                            	<now />
+                            </time-annotation>
+  					</plan-state-constraint>
+  				</complete-condition>
+  			</conditions>
+  			<plan-body>
+  				<user-performed />
+  			</plan-body>
+  		</plan>
+  	</plan-group>
+  </plans>
+</plan-library>

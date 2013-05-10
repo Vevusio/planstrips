@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plan-library SYSTEM "Asbru_7.3h_DELTA.dtd">
+<plan-library>
+	<library-info title="NewPlanLibrary">
+		<administrative-data original-author="AsbruViewNew"/>
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<qualitative-scale-def name="Boolean">
+				<qualitative-entry entry="no" />
+				<qualitative-entry entry="yes" />
+			</qualitative-scale-def>
+			<parameter-group>
+				<parameter-def name="dummy" required="no" type="Boolean">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+				<parameter-def name="age" required="yes" type="Age">
+					<raw-data-def mode="manual" use-as-context="no" />
+				</parameter-def>
+			</parameter-group>
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan name="root_P5" title="">
+				<plan-body>
+					<subplans type="unordered"> 		<!-- or parallel -->
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="P4_Exclusive_Choice" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Simple_Merge" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="P4_Exclusive_Choice" title="">
+				<plan-body>
+					<subplans type="unordered"> 	<!-- or any-order -->
+						<wait-for>
+							<one />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Plan_A" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Plan_B" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan name="Plan_A" title="Plan A">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="less-or-equal">
+								<numerical-constant value="15" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Plan_B" title="Plan B">
+				<conditions>
+					<filter-precondition>
+						<parameter-proposition parameter-name="age">
+							<value-description type="greater-than">
+								<numerical-constant value="15" />
+							</value-description>
+							<context>
+								<any />
+							</context>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</parameter-proposition>
+					</filter-precondition>
+				</conditions>
+				<plan-body>
+					<user-performed />
+				</plan-body>
+			</plan>
+			<plan name="Simple_Merge" title="Simple Merge">
+				<conditions>
+					<setup-precondition>
+						<plan-state-constraint state="completed">
+							<plan-pointer>
+								<static-plan-pointer plan-name="P4_Exclusive_Choice" />
+							</plan-pointer>
+							<time-annotation>
+								<any />
+							</time-annotation>
+						</plan-state-constraint>
+					</setup-precondition>
+				</conditions>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>
