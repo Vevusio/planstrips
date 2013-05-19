@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -24,6 +25,7 @@ public class UnhandledModelElementEditPart extends PlanStripsEditPart {
 		PlanStripsBox box = new PlanStripsBox();
 		box.setHeading(super.getModel().toString());
 		box.setType(getType());
+		box.setStrongHighlightHeadingColor(ColorConstants.white);
 		return box;
 	}
 	

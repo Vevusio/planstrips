@@ -1,1 +1,635 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><plan-library><library-info title="test-"><administrative-data original-author="0625008"/></library-info><domain-defs><domain name="mainDomain"><not-yet-defined/></domain></domain-defs><plans><plan-group><plan title="" name="Stuff"><plan-body><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><subplans type="parallel"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Feder"/></plan-activation><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Stuhl"/></plan-activation><plan-activation><plan-schema name="Tisch"/></plan-activation></subplans><subplans type="unordered"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Kirche"/></plan-activation><plan-activation><plan-schema name="Panda"/></plan-activation></subplans></subplans><plan-activation><plan-schema name="Apfel"/></plan-activation><subplans type="any-order"><wait-for><to-be-defined/></wait-for><subplans type="parallel"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Queen"/></plan-activation><subplans type="any-order"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Auto"/></plan-activation><plan-activation><plan-schema name="Widerstand"/></plan-activation></subplans><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Kepler"/></plan-activation><plan-activation><plan-schema name="Bohr"/></plan-activation></subplans></subplans><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Bison"/></plan-activation><plan-activation><plan-schema name="Ratte"/></plan-activation></subplans><plan-activation><plan-schema name="Norden"/></plan-activation><subplans type="unordered"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Bruecke"/></plan-activation><plan-activation><plan-schema name="Pfad"/></plan-activation></subplans></subplans></subplans></plan-body></plan><plan title="" name="Apfel"><plan-body><subplans type="unordered"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Mikrowelle"/></plan-activation><plan-activation><plan-schema name="Schachtel"/></plan-activation><plan-activation><plan-schema name="Sueden"/></plan-activation></subplans></plan-body></plan><plan title="" name="Schachtel"><plan-body/></plan><plan title="" name="Mikrowelle"><plan-body><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><subplans type="parallel"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Pfeffer"/></plan-activation><plan-activation><plan-schema name="Salz"/></plan-activation></subplans><subplans type="any-order"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Katze"/></plan-activation><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Fuchs"/></plan-activation><plan-activation><plan-schema name="Hund"/></plan-activation></subplans></subplans></subplans></plan-body></plan><plan title="" name="Salz"><plan-body/></plan><plan title="" name="Pfeffer"><plan-body/></plan><plan title="" name="Katze"><plan-body/></plan><plan title="" name="Fuchs"><plan-body/></plan><plan title="" name="Hund"><plan-body/></plan><plan title="" name="Feder"><plan-body/></plan><plan title="" name="Stuhl"><plan-body/></plan><plan title="" name="Tisch"><plan-body/></plan><plan title="" name="Kirche"><plan-body/></plan><plan title="" name="Panda"><plan-body><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Salz"/></plan-activation><plan-activation><plan-schema name="Pfeffer"/></plan-activation></subplans></plan-body></plan><plan title="" name="Auto"><plan-body/></plan><plan title="" name="Kepler"><plan-body/></plan><plan title="" name="Bohr"><plan-body/></plan><plan title="" name="Widerstand"><plan-body/></plan><plan title="" name="Queen"><plan-body/></plan><plan title="" name="Bison"><plan-body/></plan><plan title="" name="Ratte"><plan-body/></plan><plan title="" name="Norden"><plan-body><subplans type="parallel"><wait-for><to-be-defined/></wait-for><subplans type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Keule"/></plan-activation><plan-activation><plan-schema name="Segel"/></plan-activation></subplans><plan-activation><plan-schema name="Sand"/></plan-activation><plan-activation><plan-schema name="Salz"/></plan-activation></subplans></plan-body></plan><plan title="" name="Sand"><plan-body/></plan><plan title="" name="Keule"><plan-body/></plan><plan title="" name="Segel"><plan-body/></plan><plan title="" name="Pfad"><plan-body/></plan><plan title="" name="Bruecke"><plan-body/></plan><plan title="" name="Sueden"><plan-body><subplans type="unordered"><wait-for><to-be-defined/></wait-for><subplans retry-aborted-subplans="no" wait-for-optional-subplans="no" type="sequentially"><wait-for><to-be-defined/></wait-for><plan-activation><plan-schema name="Keule"/></plan-activation><plan-activation><plan-schema name="Segel"/></plan-activation><plan-activation><plan-schema name="Salz"/></plan-activation></subplans></subplans></plan-body></plan></plan-group></plans></plan-library>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan-library>
+	<library-info title="test-">
+		<administrative-data original-author="0625008" />
+	</library-info>
+	<domain-defs>
+		<domain name="mainDomain">
+			<not-yet-defined />
+		</domain>
+	</domain-defs>
+	<plans>
+		<plan-group>
+			<plan title="" name="Stuff">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<subplans type="parallel">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Feder" />
+							</plan-activation>
+							<subplans type="sequentially">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Stuhl" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="Tisch" />
+								</plan-activation>
+							</subplans>
+							<subplans type="unordered">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Kirche" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="Panda" />
+								</plan-activation>
+							</subplans>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="Apfel" />
+						</plan-activation>
+						<subplans type="any-order">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<subplans type="parallel">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Queen" />
+								</plan-activation>
+								<subplans type="any-order">
+									<wait-for>
+										<to-be-defined />
+									</wait-for>
+									<plan-activation>
+										<plan-schema name="Auto" />
+									</plan-activation>
+									<plan-activation>
+										<plan-schema name="Widerstand" />
+									</plan-activation>
+								</subplans>
+								<subplans type="sequentially">
+									<wait-for>
+										<to-be-defined />
+									</wait-for>
+									<plan-activation>
+										<plan-schema name="Kepler" />
+									</plan-activation>
+									<plan-activation>
+										<plan-schema name="Bohr" />
+									</plan-activation>
+								</subplans>
+							</subplans>
+							<subplans type="sequentially">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Bison" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="Ratte" />
+								</plan-activation>
+							</subplans>
+							<plan-activation>
+								<plan-schema name="Norden" />
+							</plan-activation>
+							<subplans type="unordered">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Bruecke" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="Pfad" />
+								</plan-activation>
+							</subplans>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Apfel">
+				<conditions>
+					<complete-condition>
+						<constraint-combination type="or">
+							<simple-condition>
+								<comparison type="greater-than">
+									<left-hand-side>
+										<parameter-ref name="dauer" />
+									</left-hand-side>
+									<right-hand-side>
+										<numerical-constant value="24" />
+									</right-hand-side>
+								</comparison>
+							</simple-condition>
+							<plan-state-constraint state="completed">
+								<plan-pointer>
+									<static-plan-pointer plan-name="Mikrowelle" />
+								</plan-pointer>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</plan-state-constraint>
+						</constraint-combination>
+					</complete-condition>
+					<filter-precondition>
+						<constraint-combination type="and">
+							<parameter-proposition parameter-name="istGruen">
+								<value-description type="equal">
+									<qualitative-constant value="no" />
+								</value-description>
+								<context>
+									<any />
+								</context>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</parameter-proposition>
+							<parameter-proposition parameter-name="suess">
+								<value-description type="greater-than">
+									<numerical-constant value="0.5" />
+								</value-description>
+								<context>
+									<any />
+								</context>
+								<time-annotation>
+									<now />
+								</time-annotation>
+							</parameter-proposition>
+						</constraint-combination>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="istWurming" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="unordered">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Mikrowelle" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Schachtel" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Sueden" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Schachtel">
+				<plan-body />
+			</plan>
+			<plan title="" name="Mikrowelle">
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<subplans type="parallel">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Pfeffer" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Salz" />
+							</plan-activation>
+						</subplans>
+						<subplans type="any-order">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Katze" />
+							</plan-activation>
+							<subplans type="sequentially">
+								<wait-for>
+									<to-be-defined />
+								</wait-for>
+								<plan-activation>
+									<plan-schema name="Fuchs" />
+								</plan-activation>
+								<plan-activation>
+									<plan-schema name="Hund" />
+								</plan-activation>
+							</subplans>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Salz">
+				<plan-body />
+			</plan>
+			<plan title="" name="Pfeffer">
+				<plan-body />
+			</plan>
+			<plan title="" name="Katze">
+				<plan-body />
+			</plan>
+			<plan title="" name="Fuchs">
+				<plan-body />
+			</plan>
+			<plan title="" name="Hund">
+				<plan-body />
+			</plan>
+			<plan title="" name="Feder">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<setup-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</setup-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Stuhl">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<setup-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</setup-precondition>
+					<suspend-condition>
+					</suspend-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Tisch">
+				<plan-body />
+			</plan>
+			<plan title="" name="Kirche">
+				<plan-body />
+			</plan>
+			<plan title="" name="Panda">
+				<conditions>
+					<suspend-condition>
+					</suspend-condition>
+					<reactivate-condition>
+					</reactivate-condition>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="sequentially">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<plan-activation>
+							<plan-schema name="Salz" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Pfeffer" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Auto">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+					<suspend-condition>
+					</suspend-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Kepler">
+				<plan-body />
+			</plan>
+			<plan title="" name="Bohr">
+				<plan-body />
+			</plan>
+			<plan title="" name="Widerstand">
+				<plan-body />
+			</plan>
+			<plan title="" name="Queen">
+				<plan-body />
+			</plan>
+			<plan title="" name="Bison">
+				<plan-body />
+			</plan>
+			<plan title="" name="Ratte">
+				<plan-body />
+			</plan>
+			<plan title="" name="Norden">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<setup-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</setup-precondition>
+					<filter-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</filter-precondition>
+					<abort-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body>
+					<subplans type="parallel">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<subplans type="sequentially">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Keule" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Segel" />
+							</plan-activation>
+						</subplans>
+						<plan-activation>
+							<plan-schema name="Sand" />
+						</plan-activation>
+						<plan-activation>
+							<plan-schema name="Salz" />
+						</plan-activation>
+					</subplans>
+				</plan-body>
+			</plan>
+			<plan title="" name="Sand">
+				<plan-body />
+			</plan>
+			<plan title="" name="Keule">
+				<conditions>
+					<complete-condition>
+					</complete-condition>
+					<setup-precondition>
+					</setup-precondition>
+					<filter-precondition>
+					</filter-precondition>
+					<abort-condition>
+					</abort-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Segel">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<setup-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</setup-precondition>
+					<suspend-condition>
+					</suspend-condition>
+					<reactivate-condition>
+					</reactivate-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Pfad">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<suspend-condition>
+					</suspend-condition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Bruecke">
+				<conditions>
+					<complete-condition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</complete-condition>
+					<setup-precondition>
+						<simple-condition>
+							<comparison type="equal">
+								<left-hand-side>
+									<parameter-ref name="random" />
+								</left-hand-side>
+								<right-hand-side>
+									<constant-ref name="yes" />
+								</right-hand-side>
+							</comparison>
+						</simple-condition>
+					</setup-precondition>
+				</conditions>
+				<plan-body />
+			</plan>
+			<plan title="" name="Sueden">
+				<plan-body>
+					<subplans type="unordered">
+						<wait-for>
+							<to-be-defined />
+						</wait-for>
+						<subplans retry-aborted-subplans="no"
+							wait-for-optional-subplans="no" type="sequentially">
+							<wait-for>
+								<to-be-defined />
+							</wait-for>
+							<plan-activation>
+								<plan-schema name="Keule" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Segel" />
+							</plan-activation>
+							<plan-activation>
+								<plan-schema name="Salz" />
+							</plan-activation>
+						</subplans>
+					</subplans>
+				</plan-body>
+			</plan>
+		</plan-group>
+	</plans>
+</plan-library>

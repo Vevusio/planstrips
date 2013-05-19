@@ -67,7 +67,7 @@ public class PlanEditPart extends PlanStripsEditPart {
 		}
 		return box;
 	}
-
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);

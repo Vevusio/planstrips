@@ -63,7 +63,7 @@
                label="File">
             <command
                   commandId="at.ac.tuwien.ieg.asbruedit.command.open-file"
-                  label="File Open .."
+                  label="File Open/New .."
                   style="push">
             </command>
             <command
@@ -79,6 +79,19 @@
             <command
                   commandId="org.eclipse.ui.file.exit"
                   label="Exit">
+            </command>
+         </menu>
+         <menu
+               label="PlanStrips">
+            <command
+                  commandId="at.ac.tuwien.ieg.asbruedit.show-planname-toggle"
+                  label="Show Plan Names"
+                  style="toggle">
+            </command>
+            <command
+                  commandId="at.ac.tuwien.ieg.asbruedit.show-conditions-toggle"
+                  label="Show Conditions"
+                  style="toggle">
             </command>
          </menu>
       </menuContribution>
@@ -164,6 +177,24 @@
          <state
                class="org.eclipse.ui.handlers.RadioState:left"
                id="org.eclipse.ui.commands.radioState">
+         </state>
+      </command>
+      <command
+            defaultHandler="at.ac.tuwien.ieg.asbruedit.editor.planstrips.handlers.ShowConditionsHandler"
+            id="at.ac.tuwien.ieg.asbruedit.show-conditions-toggle"
+            name="Show Conditions">
+            <state
+         class="org.eclipse.ui.handlers.RegistryToggleState:true"
+         id="org.eclipse.ui.commands.toggleState">
+     </state>
+      </command>
+      <command
+            defaultHandler="at.ac.tuwien.ieg.asbruedit.editor.planstrips.handlers.ShowPlanNamesHandler"
+            id="at.ac.tuwien.ieg.asbruedit.show-planname-toggle"
+            name="Show Plan Names">
+         <state
+               class="org.eclipse.ui.handlers.RegistryToggleState:true"
+               id="org.eclipse.ui.commands.toggleState">
          </state>
       </command>
    </extension>

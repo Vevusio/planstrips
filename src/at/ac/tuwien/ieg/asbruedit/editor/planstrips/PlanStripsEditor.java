@@ -113,6 +113,7 @@ public class PlanStripsEditor extends GraphicalEditor implements CommandStackEve
 	public void dispose() {
 		getCommandStack().removeCommandStackEventListener(this);
 		getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(breadcrumbSelectionListener);
+		PlanStripsEditorRegistry.instance().unregister(this);
 		super.dispose();
 	}
 
@@ -152,6 +153,17 @@ public class PlanStripsEditor extends GraphicalEditor implements CommandStackEve
 			;
 		}
 		return jaxbContext;
+	}
+
+	@Override
+	public Object getAdapter(Class type) {
+		if(type.equals(ConditionsToggleAdapter.class)) {
+			return new ConditionsToggleAdapter(this.getGraphicalViewer());
+		}
+		if(type.equals(PlanNameToggleAdapter.class)) {
+			return new PlanNameToggleAdapter(this.getGraphicalViewer());
+		}
+		return super.getAdapter(type);
 	}
 
 	@Override
@@ -243,6 +255,9 @@ public class PlanStripsEditor extends GraphicalEditor implements CommandStackEve
 				}
 			}
 		});
+		
+
+		PlanStripsEditorRegistry.instance().register(this);
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.Observer;
 import javax.management.RuntimeErrorException;
 
 import org.eclipse.draw2d.BorderLayout;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FlowLayout;
@@ -38,14 +39,20 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import at.ac.tuwien.ieg.asbruedit.Activator;
+import at.ac.tuwien.ieg.asbruedit.editor.planstrips.handlers.ShowConditionsHandler;
+import at.ac.tuwien.ieg.asbruedit.editor.planstrips.handlers.ShowPlanNamesHandler;
 import at.ac.tuwien.ieg.asbruedit.editor.planstrips.preferences.PreferenceConstants;
 import at.ac.tuwien.ieg.asbruedit.helpers.ColorTool;
 import at.ac.tuwien.ieg.asbruedit.helpers.PreferenceUtil;
+import at.ac.tuwien.ieg.asbruedit.helpers.UIShortcut;
 import at.ac.tuwien.ieg.asbruedit.model.ConditionsType;
 import at.ac.tuwien.ieg.asbruedit.model.PlanType;
+import at.ac.tuwien.ieg.asbruedit.view.condition.ConditionView;
 
 /**
  * 
@@ -61,11 +68,12 @@ public class PlanStripsBox extends Figure {
 	private Figure heading;
 	private Figure conditionContainer;
 	private Label label;
+	private Color strongHighlightLabelColor;
+	private Color defaultLabelColor = ColorConstants.black;
 	private PlanType type;
 	private ToolbarFigure content;
 	private LineBorder lineBorder;
 	private int highlightLevel;
-	private DetailLevel detailLevel;
 	private HashMap<ConditionsType, ConditionFigure> conditionStatuses = new HashMap<ConditionsType, ConditionFigure>();
 
 	public PlanStripsBox() {
@@ -87,12 +95,14 @@ public class PlanStripsBox extends Figure {
 		label = new Label();
 		label.setLabelAlignment(PositionConstants.LEFT);
 		heading = new Figure();
-		ToolbarLayout tbl = new ToolbarLayout(true);
-		tbl.setMinorAlignment(OrderedLayout.ALIGN_CENTER);
-		tbl.setSpacing(5);
-		tbl.setStretchMinorAxis(true);
-		heading.setLayoutManager(tbl);
-		heading.add(label);
+//		ToolbarLayout tbl = new ToolbarLayout(true);
+//		tbl.setMinorAlignment(OrderedLayout.ALIGN_CENTER);
+//		tbl.setSpacing(5);
+//		tbl.setStretchMinorAxis(true);
+		BorderLayout headingLayout = new BorderLayout();
+		headingLayout.setHorizontalSpacing(5);
+		heading.setLayoutManager(headingLayout);
+		add(heading, BorderLayout.TOP);
 		
 		conditionContainer = new Figure();
 		ToolbarLayout conditionContainerLayout = new ToolbarLayout(true);
@@ -104,38 +114,94 @@ public class PlanStripsBox extends Figure {
 		content = new ToolbarFigure();
 		add(content, BorderLayout.CENTER);
 		highlightLevel = HIGHLIGHT_NONE;
-		setDetailLevel(DetailLevel.full);
 		setFocus(0.2f);
 		
-		ConditionsType figureType = ConditionsType.filter_precondition;		
-		ConditionFigure filterFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-filter_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		ConditionsType conditionType = ConditionsType.filter_precondition;		
+		ConditionFigure filterFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-filter_active_16x16.png").createImage());
+		filterFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				filterFigure);
 		
-		figureType = ConditionsType.setup_precondition;	
-		ConditionFigure setupFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-setup_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		conditionType = ConditionsType.setup_precondition;	
+		ConditionFigure setupFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-setup_active_16x16.png").createImage());
+		setupFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				setupFigure);
 
-		figureType = ConditionsType.complete_condition;	
-		ConditionFigure completeFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-complete_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		conditionType = ConditionsType.complete_condition;	
+		ConditionFigure completeFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-complete_active_16x16.png").createImage());
+		completeFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				completeFigure);
 
-		figureType = ConditionsType.suspend_condition;	
-		ConditionFigure suspendFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-suspend_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		conditionType = ConditionsType.suspend_condition;	
+		ConditionFigure suspendFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-suspend_active_16x16.png").createImage());
+		suspendFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				suspendFigure);
 
-		figureType = ConditionsType.reactivate_condition;	
-		ConditionFigure reactiveFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-reactivate_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		conditionType = ConditionsType.reactivate_condition;	
+		ConditionFigure reactiveFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-reactivate_active_16x16.png").createImage());
+		reactiveFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				reactiveFigure);
 
-		figureType = ConditionsType.abort_condition;	
-		ConditionFigure abortFigure = new ConditionFigure(figureType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-abort_active_16x16.png").createImage());
-		conditionStatuses.put(figureType, 
+		conditionType = ConditionsType.abort_condition;	
+		ConditionFigure abortFigure = new ConditionFigure(conditionType, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/condition-abort_active_16x16.png").createImage());
+		abortFigure.addMouseListener(new ConditionViewController(conditionType));
+		conditionStatuses.put(conditionType, 
 				abortFigure);
+	}
+
+	/**
+	 * Toggle showing of conditions on/off depending on global state and internal values (conditions can still be individually activated/de-activated in the background)
+	 */
+	public void updateShowConditions() {
+		boolean anyActive = false;
+		for(ConditionFigure currentFigure : conditionStatuses.values()) {
+			if(currentFigure.isActive()) {
+				anyActive = true;
+				break;
+			}
+		}
+
+		boolean conditionContainerVisible = isConditionContainerActive();
+		boolean showConditions = ShowConditionsHandler.isShowConditions();
+		// hide conditions if they are visible already and either should not be shown or none are activated
+		if(conditionContainerVisible && (!anyActive || !showConditions)) {
+			heading.remove(conditionContainer);
+		}
+		// show the conditions if they are not shown yet, and at least one conditions is active and they should be shown or the box is currently highlighted
+		else if(!conditionContainerVisible && anyActive && (showConditions || this.highlightLevel == HIGHLIGHT_STRONG)) {
+			heading.add(conditionContainer, BorderLayout.CENTER);
+		}
+	}
+	
+	/**
+	 * Toggle showing of plan name label on/off depending on global state and internal values
+	 */
+	public void updateShowLabel() {
+		// if there is text and we want it to show
+		boolean isValidText = label.getText() != null && !"".equals(label.getText());
+		boolean labelVisible = isLabelActive();
+		boolean showLabel = ShowPlanNamesHandler.isShowPlanNames();
+		
+		// hide the label if it is visible and either the text is invalid or should not be shown
+		if(labelVisible && (!isValidText || !showLabel)) {
+			heading.remove(label);
+		}
+		// show the label if it is not visible yet, and the text is valid, and the label should be shown or the box is currently highlighted
+		else if(!labelVisible && isValidText && (showLabel || this.highlightLevel == HIGHLIGHT_STRONG)){
+			heading.add(label, BorderLayout.LEFT);
+		}
+	}
+	
+	private boolean isLabelActive() {
+		return heading.equals(label.getParent());
+	}
+	
+	private boolean isConditionContainerActive() {
+		return heading.equals(conditionContainer.getParent());
 	}
 	
 	public void setConditionActive(ConditionsType condition, boolean isActive) {
@@ -147,21 +213,7 @@ public class PlanStripsBox extends Figure {
 		else {
 			conditionContainer.remove(conditionFigure);
 		}
-		boolean anyActive = false;
-		for(ConditionFigure currentFigure : conditionStatuses.values()) {
-			if(currentFigure.isActive()) {
-				anyActive = true;
-				break;
-			}
-		}
-		// if a condition is active and the condition container is not already added
-		boolean conditionContainerVisible = heading.equals(conditionContainer.getParent());
-		if(anyActive && !conditionContainerVisible) {
-			heading.add(conditionContainer);
-		}
-		else if(!anyActive && conditionContainerVisible){
-			heading.remove(conditionContainer);
-		}
+		updateShowConditions();
 	}
 	
 	public boolean isConditionActive(ConditionsType condition) {
@@ -185,22 +237,18 @@ public class PlanStripsBox extends Figure {
 	
 	public void setHeading(String text) {
 		this.label.setText(text);
-		
-		// if there is text and we want it to show
-		if(text != null && !"".equals(text) && !DetailLevel.none.equals(detailLevel)) {
-			add(heading, BorderLayout.TOP);
-		}
-		// else the text is invalid or we don't want it to show remove the heading if it is currently being shown
-		else if(heading.getParent() == this){
-			remove(heading);
-		}
+		updateShowLabel();
 	}
 	
 	public String getHeading() {
 		return label.getText();
 	}
 	
-	private void setFontSize(int fontSize) {
+	public void setStrongHighlightHeadingColor(Color color) {
+		this.strongHighlightLabelColor = color;
+	}
+	
+	public void setFontSize(int fontSize) {
 		Font initialFont = null;
 		if(label.getFont() == null) {
 			Shell shell = new Shell(Display.getCurrent());
@@ -216,15 +264,6 @@ public class PlanStripsBox extends Figure {
 		}
 		Font newFont = new Font(Display.getCurrent(), fontData);
 		label.setFont(newFont);
-	}
-	
-	public void setDetailLevel(DetailLevel detailLevel) {
-		if(this.detailLevel == detailLevel) {
-			return;
-		}
-		this.detailLevel = detailLevel;
-		// re-set the heading, let the method figure out the display properties for itself
-		setHeading(getHeading());
 	}
 	
 	public void setType(PlanType type) {
@@ -246,6 +285,9 @@ public class PlanStripsBox extends Figure {
 		case HIGHLIGHT_STRONG:
 			setBackgroundColor(type.readActiveColor());
 			lineBorder.setColor(PreferenceUtil.readColor(PreferenceConstants.COLOR_BOX_BORDER_ACTIVE));
+			if(strongHighlightLabelColor != null) {
+				label.setForegroundColor(strongHighlightLabelColor);
+			}
 			break;
 		case HIGHLIGHT_WEAK:
 			setBackgroundColor(
@@ -258,12 +300,16 @@ public class PlanStripsBox extends Figure {
 							PreferenceUtil.readColor(PreferenceConstants.COLOR_BOX_BORDER_PASSIVE),
 							PreferenceUtil.readColor(PreferenceConstants.COLOR_BOX_BORDER_ACTIVE), 
 							0.8f));
+			label.setForegroundColor(defaultLabelColor);
 			break;
 		default: //HIGHLIGHT_NONE or invalid
 			setBackgroundColor(type.readPassiveColor());
 			lineBorder.setColor(PreferenceUtil.readColor(PreferenceConstants.COLOR_BOX_BORDER_PASSIVE));
+			label.setForegroundColor(defaultLabelColor);
 			break;
 		}
+		updateShowLabel();
+		updateShowConditions();
 	}
 	
 	public ToolbarFigure getContentPane() {
@@ -293,6 +339,28 @@ public class PlanStripsBox extends Figure {
 				this.setIcon(null);
 				this.setVisible(false);
 			}
+		}
+	}
+	
+	public static class ConditionViewController implements MouseListener {
+		ConditionsType type;
+
+		public ConditionViewController(ConditionsType type) {
+			this.type = type;
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent me) {
+			ConditionView view = (ConditionView)UIShortcut.getActivePageView(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), ConditionView.ID);
+			view.setConditionType(type);
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent me) {
+		}
+
+		@Override
+		public void mouseDoubleClicked(MouseEvent me) {
 		}
 	}
 	
